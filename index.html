@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jquery-table</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="jquery-table.css">
+    <style>
+        body{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<table id="table"></table>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    (function($){
+        if($.fn.table){
+            return;
+        }
+        var setMethods={
+            render:render
+        };
+        var getMethods={};
+        $.fn.table=function( ){
+            var args=arguments,params,method;
+            if(!args.length|| typeof args[0] == 'object'){
+                return this.each(function(idx){
+                    var $self=$(this);
+                    $self.data('table',$.extend(true,{},$.fn.table.default,args[0]));
+                    params=$self.data('table');
+                    _init.call( $self,params);
+                    _render.call($self);
+                });
+            }else{
+                if(!$(this).data('table')){
+                    throw new Error('You has not init table!');
+                }
+                params=Array.prototype.slice.call(args,1);
+                if (setMethods.hasOwnProperty(args[0])){
+                    method=setMethods[args[0]];
+                    return this.each(function(idx){
+                        var $self=$(this);
+                        method.apply($self,params);
+                        _render.call($self);
+                    });
+                }else if(getMethods.hasOwnProperty(args[0])){
+                    method=getMethods[args[0]];
+                    return method.apply(this,params);
+                }else{
+                    throw new Error('There is no such method');
+                }
+            }
+        }
+        $.fn.table.default={
+            cls:"table table-striped table-hover",
+            headCls:"table-thead",
+            showNo:true,
+            showCheckbox:true,
+            select:true,
+            singleSelect:true,
+            number:function(i){
+                return i+1;
+            },
+            datas:[],
+            columns:[]
+        }
+        function _init(params){
+            params._datas=params.datas.map(function(data){
+                return {
+                    data:data
+                }
+            });
+            params._datas[0].data.batchno="xxx";
+            return this;
+        }
+        function render(option){
+            $.extend(this.data('table'),option);
+        }
+        function _render(){
+            var $self=this;
+            var params=$self.data("table");
+            var _columns=params.columns.reduce(function(target,column){
+                target[column.field]=column;
+                return target;
+            },{});
+            this.addClass(params.cls).html([
+                $("<thead/>",{
+                    "class":params.headCls
+                }).append(
+                    $("<tr/>").append(
+                        function(){
+                            if(params.showNo){
+                                return $("<th/>",{
+                                    "class":"table-no"
+                                }).append(
+                                    document.createTextNode("序号")
+                                )
+                            }
+                        }(),
+                        function(){
+                            if(params.showCheckbox){
+                                return $("<th/>",{
+                                    "class":"table-checkbox"
+                                }).append(
+                                    $("<label/>").append(
+                                        $("<label/>",{
+                                            "class":"table-right-checkbox"
+                                        }).append(
+                                            function(){
+                                                var checkbox=document.createElement("input");
+                                                checkbox.type="checkbox";
+                                                checkbox.checked=params._datas.every(function(_data){
+                                                    return _data.checked;
+                                                });
+                                                checkbox.addEventListener("change",function(){
+                                                    params._datas.forEach(function(_data){
+                                                        _data.checked=checkbox.checked;
+                                                    });
+                                                    _render.call($self);
+                                                });
+                                                return [
+                                                    checkbox,
+                                                    $("<span/>",{
+                                                        "class":"table-checkbox-container"
+                                                    })
+                                                ]
+                                            }()
+                                        ),
+                                        document.createTextNode(" 选择")
+                                    )
+                                )
+                            }
+                        }(),
+                        params.columns.map(function(column){
+                            return $("<th/>").append(
+                                document.createTextNode(column.title)
+                            )
+                        })
+                    )
+                ),
+                $("<tbody/>").append(
+                    params._datas.map(function(_data,idx){
+                        var data=_data.data;
+                        return $("<tr/>").append(
+                            function(){
+                                if(params.showNo){
+                                    return $("<td/>").append(
+                                        document.createTextNode(params.number(idx))
+                                    )
+                                }
+                            }(),
+                            function(){
+                                if(params.showCheckbox){
+                                    return $("<td/>").append(
+                                        $("<label/>",{
+                                            "class":"table-right-checkbox"
+                                        }).append(
+                                            function(){
+                                                var checkbox=document.createElement("input");
+                                                checkbox.type="checkbox";
+                                                checkbox.checked=!!_data.checked;
+                                                checkbox.addEventListener("change",function(){
+                                                    _data.checked=this.checked;
+                                                    _render.call($self);
+                                                });
+                                                return [
+                                                    checkbox,
+                                                    $("<span/>",{
+                                                        "class":"table-checkbox-container"
+                                                    })
+                                                ]
+                                            }()
+                                        )
+                                    )
+                                }
+                            }(),
+                            Object.keys(_columns).map(function(field){
+                                return $("<td/>",{
+                                    html:function(){
+                                        var formatter=_columns[field].formatter;
+                                        if(_columns[field].formatter){
+                                            return formatter(data[field],data,idx);
+                                        }
+                                        return data[field];
+                                    }
+                                })
+                            })
+                        )
+
+                    })
+                )
+            ]);
+        }
+    })(jQuery);
+    var datas=[{
+        taskno:"201611001",
+        batchno:"001",
+        employer:"山东电力公司",
+        plannedStartTime:new Date().toLocaleDateString(),
+        startTime:new Date().toLocaleDateString(),
+        endTime:new Date().toLocaleDateString(),
+        status:"-1",
+        result:"1"
+    },{
+        taskno:"201611002",
+        batchno:"002",
+        employer:"山东电力公司",
+        plannedStartTime:"",
+        startTime:new Date().toLocaleDateString(),
+        endTime:new Date().toLocaleDateString(),
+        status:"0",
+        result:""
+    },{
+        taskno:"201611003",
+        batchno:"003",
+        employer:"山东电力公司",
+        plannedStartTime:new Date().toLocaleDateString(),
+        startTime:"",
+        endTime:new Date().toLocaleDateString(),
+        status:"1",
+        result:"1"
+    },{
+        taskno:"201611004",
+        batchno:"004",
+        employer:"山东电力公司",
+        plannedStartTime:new Date().toLocaleDateString(),
+        startTime:new Date().toLocaleDateString(),
+        endTime:"",
+        status:"2",
+        result:""
+    },{
+        taskno:"201611005",
+        batchno:"005",
+        employer:"山东电力公司",
+        plannedStartTime:new Date().toLocaleDateString(),
+        startTime:new Date().toLocaleDateString(),
+        endTime:new Date().toLocaleDateString(),
+        status:"",
+        result:"3"
+    }];
+    $("#table").table({
+        showNo:true,
+        number:function(i){
+            return i+1;
+        },
+        showCheckbox:true,
+        datas:datas,
+        columns:[{
+            title:"任务编号",
+            field:"taskno"
+        },{
+            title:"批次号",
+            field:"batchno",
+            formatter:function(value,rowData,rowIndex){
+                return $("<span/>",{
+                    "style":"color:#0d84d4",
+                    "text":value
+                })
+            }
+        },{
+            title:"单位",
+            field:"employer"
+        },{
+            title:"计划开始时间",
+            field:"plannedStartTime",
+            formatter:function(value,rowData,rowIndex){
+                if(!value){
+                    return "- -"
+                }
+                var date=new Date(value);
+                return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
+            }
+        },{
+            title:"实际开始时间",
+            field:"startTime",
+            formatter:function(value,rowData,rowIndex){
+                if(!value){
+                    return "- -"
+                }
+                var date=new Date(value);
+                return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
+            }
+        },{
+            title:"实际结束时间",
+            field:"endTime",
+            formatter:function(value,rowData,rowIndex){
+                if(!value){
+                    return "- -"
+                }
+                var date=new Date(value);
+                return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
+            }
+        },{
+            title:"执行状态",
+            field:"status",
+            formatter:function(value,rowData,rowIndex){
+                switch (+value){
+                    case -1:return "暂停执行";
+                    case 0:return "未执行";
+                    case 1:return "正在执行";
+                    case 2:return "任务完成";
+                }
+                return "未知"
+            }
+        },{
+            title:"执行结果",
+            field:"result",
+            formatter:function(value,rowData,rowIndex){
+                if(!value||value=="0"){
+                    return "- -";
+                }
+                return [
+                    $("<a/>",{
+                        "class":"btn btn-warning btn-xs"
+                    }).append(
+                        $("<span/>",{
+                            "class":"glyphicon glyphicon-save"
+                        }),
+                        document.createTextNode("下载")
+                    ),
+                    $("<a/>",{
+                        "class":"btn btn-success btn-xs"
+                    }).append(
+                            $("<span/>",{
+                                "class":"glyphicon glyphicon-eye-open"
+                            }),
+                            document.createTextNode("查看")
+                    )
+                ]
+            }
+        }]
+    });
+</script>
+</body>
+</html>
