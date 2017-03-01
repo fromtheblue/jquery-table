@@ -31,6 +31,15 @@
         showCheckbox:true,
         select:true,
         singleSelect:true,
+        rowEvents:{
+            click:function(rowData,idx,e){
+                console.log(this);
+                console.log("click",arguments);
+            },
+            mousedown:function(rowData,idx,e){
+                console.log("mousedown",arguments);
+            }
+        },
         datas:datas,
         columns:[{
             title:"任务编号",

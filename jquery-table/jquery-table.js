@@ -12,9 +12,17 @@
  *              number:function(i){ 行号的格式
  *                  return i+1;
  *              },
+ *              rowEvents:{} 添加事件对象,跟jquery的添加事件相同
  *              datas:[], 填充表格的数据
  *              columns:[] 列
  *              }
+ *      rowEvents{eventKey:function(rowData,idx,e)}
+ *              eventKey 事件的名称,如click
+ *              function
+ *                      rowData 当前点击行的填充数据
+ *                      idx 当前点击行所在的行数
+ *                      e 事件对象
+ *                      this 触发事件的行(td)的jquery对象
  *      columns[{field:string,title:string,formatter:function(value,rowData,idx)}]
  *             field  每列的字段名称
  *             title  每列的表头
@@ -84,7 +92,8 @@
             return i+1;
         },
         datas:[],
-        columns:[]
+        columns:[],
+        rowEvents:{}
     }
     function _init(params){
         params._datas=params.datas.map(function(data){
@@ -206,7 +215,7 @@
             $("<tbody/>").append(
                 params._datas.map(function(_data,idx){
                     var data=_data.data;
-                    return $("<tr/>",{
+                    var row = $("<tr/>",{
                         "click":function(event){
                             var selected;
                             if(params.select){
@@ -268,7 +277,11 @@
                             })
                         })
                     )
-
+                    row.on(Object.keys(params.rowEvents).reduce(function(target,key){
+                        target[key]=params.rowEvents[key].bind(row,data,idx);
+                        return target;
+                    },{}));
+                    return row;
                 })
             )
         ]);
