@@ -9,11 +9,14 @@
  *              showCheckbox:true, 是否显示复选框
  *              select:true, 行是否可以被选中
  *              singleSelect:true, 行的选中方式是否只支持单选
+ *              noRowMsg:function(datas){ 当未获取到数据或者数据不为数组的时候调用的函数
+ *                  return datas?"未获取到数据":"数据加载异常";
+ *              },
  *              number:function(i){ 行号的格式
  *                  return i+1;
  *              },
  *              rowEvents:{} 添加事件对象,跟jquery的添加事件相同
- *              datas:[], 填充表格的数据
+ *              datas:,  array填充表格的数据
  *              columns:[] 列
  *              }
  *      rowEvents{eventKey:function(rowData,idx,e)}
@@ -88,19 +91,23 @@
         showCheckbox:true,
         select:true,
         singleSelect:true,
+        noRowMsg:function(datas){
+            return datas?"未获取到数据":"数据加载异常";
+        },
         number:function(i){
             return i+1;
         },
-        datas:[],
         columns:[],
         rowEvents:{}
     }
     function _init(params){
-        params._datas=params.datas.map(function(data){
-            return {
-                data:data
-            }
-        });
+        if(params.datas&&params.datas instanceof Array){
+            params._datas=params.datas.map(function(data){
+                return {
+                    data:data
+                }
+            });
+        }
         return this;
     }
     function setDatas(datas){
@@ -183,9 +190,11 @@
                                         function(){
                                             var checkbox=document.createElement("input");
                                             checkbox.type="checkbox";
-                                            checkbox.checked=params._datas.every(function(_data){
-                                                return _data.checked;
-                                            });
+                                            if(params._datas){
+                                                checkbox.checked=params._datas.every(function(_data){
+                                                    return _data.checked;
+                                                });
+                                            }
                                             checkbox.addEventListener("change",function(){
                                                 params._datas.forEach(function(_data){
                                                     _data.checked=checkbox.checked;
@@ -213,76 +222,90 @@
                 )
             ),
             $("<tbody/>").append(
-                params._datas.map(function(_data,idx){
-                    var data=_data.data;
-                    var row = $("<tr/>",{
-                        "click":function(event){
-                            var selected;
-                            if(params.select){
-                                if($(event.target).closest(".table-right-checkbox").length){
-                                    _data.checked=!_data.checked;
+                function(){
+                    if(!params._datas||!params._datas.length){
+                        return $("<tr/>").append(
+                            $("<td/>",{
+                                "colspan":function(){
+                                    return params.columns.length+params.showNo+params.showCheckbox;
                                 }
-                                selected=!!_data.selected;
-                                if(params.singleSelect){
-                                    params._datas.forEach(function(_data){
-                                        _data.selected=false;
-                                    });
-                                }
-                                _data.selected=!selected;
-                                _render.call($self);
-                            }
-                        }
-                    }).toggleClass("selected",!!_data.selected).append(
-                        function(){
-                            if(params.showNo){
-                                return $("<td/>").append(
-                                    document.createTextNode(params.number(idx))
-                                )
-                            }
-                        }(),
-                        function(){
-                            if(params.showCheckbox){
-                                return $("<td/>").append(
-                                    $("<label/>",{
-                                        "class":"table-right-checkbox"
-                                    }).append(
-                                        function(){
-                                            var checkbox=document.createElement("input");
-                                            checkbox.type="checkbox";
-                                            checkbox.checked=!!_data.checked;
-                                            checkbox.addEventListener("change",function(){
-                                                _data.checked=this.checked;
-                                                _render.call($self);
-                                            });
-                                            return [
-                                                checkbox,
-                                                $("<span/>",{
-                                                    "class":"table-checkbox-container"
-                                                })
-                                            ]
-                                        }()
-                                    )
-                                )
-                            }
-                        }(),
-                        Object.keys(_columns).map(function(field){
-                            return $("<td/>",{
-                                html:function(){
-                                    var formatter=_columns[field].formatter;
-                                    if(_columns[field].formatter){
-                                        return formatter(data[field],data,idx);
+                            }).append(
+                                params.noRowMsg(params._datas)
+                            )
+                        )
+                    }
+                    return params._datas.map(function(_data,idx){
+                        var data=_data.data;
+                        var row = $("<tr/>",{
+                            "click":function(event){
+                                var selected;
+                                if(params.select){
+                                    if($(event.target).closest(".table-right-checkbox").length){
+                                        _data.checked=!_data.checked;
                                     }
-                                    return data[field];
+                                    selected=!!_data.selected;
+                                    if(params.singleSelect){
+                                        params._datas.forEach(function(_data){
+                                            _data.selected=false;
+                                        });
+                                    }
+                                    _data.selected=!selected;
+                                    _render.call($self);
                                 }
+                            }
+                        }).toggleClass("selected",!!_data.selected).append(
+                            function(){
+                                if(params.showNo){
+                                    return $("<td/>").append(
+                                        document.createTextNode(params.number(idx))
+                                    )
+                                }
+                            }(),
+                            function(){
+                                if(params.showCheckbox){
+                                    return $("<td/>").append(
+                                        $("<label/>",{
+                                            "class":"table-right-checkbox"
+                                        }).append(
+                                            function(){
+                                                var checkbox=document.createElement("input");
+                                                checkbox.type="checkbox";
+                                                checkbox.checked=!!_data.checked;
+                                                checkbox.addEventListener("change",function(){
+                                                    _data.checked=this.checked;
+                                                    _render.call($self);
+                                                });
+                                                return [
+                                                    checkbox,
+                                                    $("<span/>",{
+                                                        "class":"table-checkbox-container"
+                                                    })
+                                                ]
+                                            }()
+                                        )
+                                    )
+                                }
+                            }(),
+                            Object.keys(_columns).map(function(field){
+                                return $("<td/>",{
+                                    html:function(){
+                                        var formatter=_columns[field].formatter;
+                                        if(_columns[field].formatter){
+                                            return formatter(data[field],data,idx);
+                                        }
+                                        return data[field];
+                                    }
+                                })
                             })
-                        })
-                    )
-                    row.on(Object.keys(params.rowEvents).reduce(function(target,key){
-                        target[key]=params.rowEvents[key].bind(row,data,idx);
-                        return target;
-                    },{}));
-                    return row;
-                })
+                        )
+                        row.on(Object.keys(params.rowEvents).reduce(function(target,key){
+                            target[key]=params.rowEvents[key].bind(row,data,idx);
+                            return target;
+                        },{}));
+                        return row;
+                    })
+                }
+
             )
         ]);
     }
