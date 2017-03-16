@@ -16,7 +16,7 @@
  *                  return i+1;
  *              },
  *              rowEvents:{} 添加事件对象,跟jquery的添加事件相同
- *              datas:,  array填充表格的数据
+ *              datas:[],  array填充表格的数据
  *              columns:[] 列
  *              }
  *      rowEvents{eventKey:function(rowData,idx,e)}
@@ -97,10 +97,13 @@
         number:function(i){
             return i+1;
         },
+        datas:[],
         columns:[],
         rowEvents:{}
     }
     function _init(params){
+        /*初始化的时候不要展示无数据的消息*/
+        params._showNoRowMsg=false;
         if(params.datas&&params.datas instanceof Array){
             params._datas=params.datas.map(function(data){
                 return {
@@ -115,21 +118,27 @@
             params=this.data('table'),
             id=params.id,
              _datas=params._datas;
-            params.datas=datas;
-        _datas.reduceRight(function(privous,_data,idx){
-            if(datas.every(function(data){
-                    return data[id]!=_data.data[id];
-                })){
-                _datas.splice(idx,1);
-            }
-        },{});
-        datas.forEach(function(data){
-            if(_datas.every(function(_data){
-                    return data[id]!=_data.data[id];
-                })){
-                _datas.push({data:data});
-            }
-        })
+            params.datas=datas,
+            /*set数据的时候可以显示无数据的消息*/
+            params._showNoRowMsg=true;
+        if(datas){
+            _datas.reduceRight(function(privous,_data,idx){
+                if(datas.every(function(data){
+                        return data[id]!=_data.data[id];
+                    })){
+                    _datas.splice(idx,1);
+                }
+            },{});
+            datas.forEach(function(data){
+                if(_datas.every(function(_data){
+                        return data[id]!=_data.data[id];
+                    })){
+                    _datas.push({data:data});
+                }
+            })
+        }else{
+            params._datas=datas;
+        }
     }
     function getChecked(){
         return this.data("table")._datas.filter(function(_data){
@@ -191,9 +200,11 @@
                                             var checkbox=document.createElement("input");
                                             checkbox.type="checkbox";
                                             if(params._datas){
-                                                checkbox.checked=params._datas.every(function(_data){
-                                                    return _data.checked;
-                                                });
+                                                if(params._datas.length||params._showNoRowMsg){
+                                                    checkbox.checked=params._datas.every(function(_data){
+                                                        return _data.checked;
+                                                    });
+                                                }
                                             }
                                             checkbox.addEventListener("change",function(){
                                                 params._datas.forEach(function(_data){
@@ -223,7 +234,7 @@
             ),
             $("<tbody/>").append(
                 function(){
-                    if(!params._datas||!params._datas.length){
+                    if((!params._datas||!params._datas.length)&&params._showNoRowMsg){
                         return $("<tr/>").append(
                             $("<td/>",{
                                 "colspan":function(){
