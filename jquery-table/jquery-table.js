@@ -217,8 +217,7 @@
                                                 })
                                             ]
                                         }()
-                                    ),
-                                    document.createTextNode(" 选择")
+                                    )
                                 )
                             )
                         }
