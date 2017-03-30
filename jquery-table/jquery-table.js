@@ -87,10 +87,10 @@
         id:"id",
         cls:"table table-striped table-hover",
         headCls:"table-thead",
-        showNo:true,
+        showNo:false,
         showCheckbox:true,
-        select:true,
-        singleSelect:true,
+        select:false,
+        singleSelect:false,
         noRowMsg:function(datas){
             return datas?"未获取到数据":"数据加载异常";
         },
