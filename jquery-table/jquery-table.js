@@ -117,25 +117,23 @@
         var $self=this,
             params=this.data('table'),
             id=params.id,
-             _datas=params._datas;
+             _datas=params._datas,
+            _newDatas;
             params.datas=datas,
             /*set数据的时候可以显示无数据的消息*/
             params._showNoRowMsg=true;
         if(datas){
-            _datas.reduceRight(function(privous,_data,idx){
-                if(datas.every(function(data){
-                        return data[id]!=_data.data[id];
-                    })){
-                    _datas.splice(idx,1);
-                }
-            },{});
-            datas.forEach(function(data,idx){
-                if(_datas.every(function(_data){
-                        return data[id]!=_data.data[id];
-                    })){
-                    _datas.splice(idx,0,{data:data});
-                }
-            })
+            _newDatas=datas.map(function(data){
+                var _newData={};
+                _datas.forEach(function(_data){
+                   if(_data.data[id]===data[id]){
+                       _newData=_data;
+                   }
+                });
+                _newData.data=data;
+                 return _newData;
+            });
+            params._datas=_newDatas;
         }else{
             params._datas=datas;
         }
