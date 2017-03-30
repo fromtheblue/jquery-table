@@ -129,11 +129,11 @@
                     _datas.splice(idx,1);
                 }
             },{});
-            datas.forEach(function(data){
+            datas.forEach(function(data,idx){
                 if(_datas.every(function(_data){
                         return data[id]!=_data.data[id];
                     })){
-                    _datas.push({data:data});
+                    _datas.splice(idx,0,{data:data});
                 }
             })
         }else{
