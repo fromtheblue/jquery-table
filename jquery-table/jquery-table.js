@@ -117,21 +117,21 @@
         var $self=this,
             params=this.data('table'),
             id=params.id,
-             _datas=params._datas,
+            _datas=params._datas,
             _newDatas;
-            params.datas=datas,
+        params.datas=datas,
             /*set数据的时候可以显示无数据的消息*/
             params._showNoRowMsg=true;
         if(datas){
             _newDatas=datas.map(function(data){
                 var _newData={};
                 _datas.forEach(function(_data){
-                   if(_data.data[id]===data[id]){
-                       _newData=_data;
-                   }
+                    if(_data.data[id]===data[id]){
+                        _newData=_data;
+                    }
                 });
                 _newData.data=data;
-                 return _newData;
+                return _newData;
             });
             params._datas=_newDatas;
         }else{
@@ -167,10 +167,6 @@
     function _render(){
         var $self=this;
         var params=$self.data("table");
-        var _columns=params.columns.reduce(function(target,column){
-            target[column.field]=column;
-            return target;
-        },{});
         this.addClass(params.cls).html([
             $("<thead/>",{
                 "class":params.headCls
@@ -294,14 +290,14 @@
                                     )
                                 }
                             }(),
-                            Object.keys(_columns).map(function(field){
+                            (params.columns||[]).map(function(column){
                                 return $("<td/>",{
                                     html:function(){
-                                        var formatter=_columns[field].formatter;
-                                        if(_columns[field].formatter){
-                                            return formatter(data[field],data,idx);
+                                        var formatter=column.formatter;
+                                        if(formatter){
+                                            return formatter(data[column.field],data,idx);
                                         }
-                                        return data[field];
+                                        return data[column.field];
                                     }
                                 })
                             })
