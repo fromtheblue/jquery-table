@@ -142,9 +142,13 @@
             throw new Error('The params must be Array or Number or String');
         }
         _datas.forEach(function (_data) {
-            if($.inArray(_data.data[id],ids)!== -1){
-                _data.checked=true;
-            }
+            /*
+             *判断当前数据的id是否是在传入的ids中，若当前数据的id是在传入的ids中则选中，
+             *当id不在ids中，则当前数据的选中状态仍保留原值
+             * */
+            _data.checked=ids.some(function(idx){
+                    return idx==_data.data[id];
+                })||_data.checked;
         })
     }
     function getChecked(){
