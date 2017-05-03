@@ -40,6 +40,7 @@
                 console.log("mousedown",arguments);
             }
         },
+        datas:datas,
         columns:[{
             title:"任务编号",
             field:"taskno"
@@ -128,15 +129,6 @@
             }
         }]
     });
-    /*这个deferred加上下面的setTimeout是扮演ajax的角色的*/
-    var deferred= $.Deferred();
-    setTimeout(function(){
-        deferred.resolve(datas);
-    },2000);
-    deferred.done(function(datas){
-        $("#table").table("setDatas",datas);/*这里的datas可以分别使用datas [] null 之类的试一试*/
-    });
-
     $("#getChecked").on("click",function(){
         console.log($("#table").table("getChecked"));
     });
@@ -150,8 +142,8 @@
         console.log($("#table").table("getSelectedIDs"));
     });
     $("#render").on("click",function(){
-        datas.shift();
-        datas.unshift({
+        datas.shift();//这句话把000001的数据删除掉了
+        datas.push({
             id:"000006",
             taskno:"201611006",
             batchno:"006",
@@ -162,18 +154,8 @@
             status:"-1",
             result:"1"
         });
-        datas.unshift({
-            id:"000001",
-            taskno:"201611007",
-            batchno:"001",
-            employer:"山东电力公司",
-            plannedStartTime:new Date().toLocaleDateString(),
-            startTime:new Date().toLocaleDateString(),
-            endTime:new Date().toLocaleDateString(),
-            status:"-1",
-            result:"1"
-        });
         $("#table").table("setDatas",datas);
+        $("#table").table("check",["000005","000006"]);
     })
 </script>
 </body>

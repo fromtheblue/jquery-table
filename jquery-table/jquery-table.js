@@ -9,14 +9,11 @@
  *              showCheckbox:true, 是否显示复选框
  *              select:true, 行是否可以被选中
  *              singleSelect:true, 行的选中方式是否只支持单选
- *              noRowMsg:function(datas){ 当未获取到数据或者数据不为数组的时候调用的函数
- *                  return datas?"未获取到数据":"数据加载异常";
- *              },
  *              number:function(i){ 行号的格式
  *                  return i+1;
  *              },
  *              rowEvents:{} 添加事件对象,跟jquery的添加事件相同
- *              datas:[],  array填充表格的数据
+ *              datas:[], 填充表格的数据
  *              columns:[] 列
  *              }
  *      rowEvents{eventKey:function(rowData,idx,e)}
@@ -39,13 +36,16 @@
  *              getSelected 获取所有的被选中的数据
  *              getSelectedIDs 获取所有被选中的数据的id字符串
  *              setDatas(datas) 重新渲染数据
+ *              check(ids) 选中表格数据（复选框被选中）
+ *                      ids 要选中的原始数据的id集合,只能是数字,字符串和数组类型
  */
 (function($){
     if($.fn.table){
         return;
     }
     var setMethods={
-        setDatas:setDatas
+        setDatas:setDatas,
+        "check":check
     };
     var getMethods={
         getChecked:getChecked,
@@ -87,13 +87,10 @@
         id:"id",
         cls:"table table-striped table-hover",
         headCls:"table-thead",
-        showNo:false,
+        showNo:true,
         showCheckbox:true,
-        select:false,
-        singleSelect:false,
-        noRowMsg:function(datas){
-            return datas?"未获取到数据":"数据加载异常";
-        },
+        select:true,
+        singleSelect:true,
         number:function(i){
             return i+1;
         },
@@ -102,41 +99,53 @@
         rowEvents:{}
     }
     function _init(params){
-        /*初始化的时候不要展示无数据的消息*/
-        params._showNoRowMsg=false;
-        if(params.datas&&params.datas instanceof Array){
-            params._datas=params.datas.map(function(data){
-                return {
-                    data:data
-                }
-            });
-        }
+        params._datas=params.datas.map(function(data){
+            return {
+                data:data
+            }
+        });
         return this;
     }
     function setDatas(datas){
         var $self=this,
             params=this.data('table'),
             id=params.id,
-            _datas=params._datas,
-            _newDatas;
-        params.datas=datas,
-            /*set数据的时候可以显示无数据的消息*/
-            params._showNoRowMsg=true;
-        if(datas){
-            _newDatas=datas.map(function(data){
-                var _newData={};
-                _datas.forEach(function(_data){
-                    if(_data.data[id]===data[id]){
-                        _newData=_data;
-                    }
-                });
-                _newData.data=data;
-                return _newData;
-            });
-            params._datas=_newDatas;
-        }else{
-            params._datas=datas;
+             _datas=params._datas;
+            params.datas=datas;
+        _datas.reduceRight(function(privous,_data,idx){
+            if(datas.every(function(data){
+                    return data[id]!=_data.data[id];
+                })){
+                _datas.splice(idx,1);
+            }
+        },{});
+        datas.forEach(function(data){
+            if(_datas.every(function(_data){
+                    return data[id]!=_data.data[id];
+                })){
+                _datas.push({data:data});
+            }
+        })
+    }
+    function check(ids) {
+        var $self = this,
+            params = this.data('table'),
+            id = params.id,
+            _datas = params._datas;
+        if(typeof ids == "number"){
+            ids = ""+ids;
         }
+        if(typeof ids == "string"){
+            ids = ids.split(",");
+        }
+        if(!(ids instanceof Array)){
+            throw new Error('The params must be Array or Number or String');
+        }
+        _datas.forEach(function (_data) {
+            if($.inArray(_data.data[id],ids)!== -1){
+                _data.checked=true;
+            }
+        })
     }
     function getChecked(){
         return this.data("table")._datas.filter(function(_data){
@@ -167,6 +176,10 @@
     function _render(){
         var $self=this;
         var params=$self.data("table");
+        var _columns=params.columns.reduce(function(target,column){
+            target[column.field]=column;
+            return target;
+        },{});
         this.addClass(params.cls).html([
             $("<thead/>",{
                 "class":params.headCls
@@ -193,13 +206,9 @@
                                         function(){
                                             var checkbox=document.createElement("input");
                                             checkbox.type="checkbox";
-                                            if(params._datas){
-                                                if(params._datas.length||params._showNoRowMsg){
-                                                    checkbox.checked=params._datas.every(function(_data){
-                                                        return _data.checked;
-                                                    });
-                                                }
-                                            }
+                                            checkbox.checked=params._datas.every(function(_data){
+                                                return _data.checked;
+                                            });
                                             checkbox.addEventListener("change",function(){
                                                 params._datas.forEach(function(_data){
                                                     _data.checked=checkbox.checked;
@@ -213,7 +222,8 @@
                                                 })
                                             ]
                                         }()
-                                    )
+                                    ),
+                                    document.createTextNode(" 选择")
                                 )
                             )
                         }
@@ -226,90 +236,76 @@
                 )
             ),
             $("<tbody/>").append(
-                function(){
-                    if((!params._datas||!params._datas.length)&&params._showNoRowMsg){
-                        return $("<tr/>").append(
-                            $("<td/>",{
-                                "colspan":function(){
-                                    return params.columns.length+params.showNo+params.showCheckbox;
+                params._datas.map(function(_data,idx){
+                    var data=_data.data;
+                    var row = $("<tr/>",{
+                        "click":function(event){
+                            var selected;
+                            if(params.select){
+                                if($(event.target).closest(".table-right-checkbox").length){
+                                    _data.checked=!_data.checked;
                                 }
-                            }).append(
-                                params.noRowMsg(params._datas)
-                            )
-                        )
-                    }
-                    return params._datas.map(function(_data,idx){
-                        var data=_data.data;
-                        var row = $("<tr/>",{
-                            "click":function(event){
-                                var selected;
-                                if(params.select){
-                                    if($(event.target).closest(".table-right-checkbox").length){
-                                        _data.checked=!_data.checked;
-                                    }
-                                    selected=!!_data.selected;
-                                    if(params.singleSelect){
-                                        params._datas.forEach(function(_data){
-                                            _data.selected=false;
-                                        });
-                                    }
-                                    _data.selected=!selected;
-                                    _render.call($self);
+                                selected=!!_data.selected;
+                                if(params.singleSelect){
+                                    params._datas.forEach(function(_data){
+                                        _data.selected=false;
+                                    });
                                 }
+                                _data.selected=!selected;
+                                _render.call($self);
                             }
-                        }).toggleClass("selected",!!_data.selected).append(
-                            function(){
-                                if(params.showNo){
-                                    return $("<td/>").append(
-                                        document.createTextNode(params.number(idx))
+                        }
+                    }).toggleClass("selected",!!_data.selected).append(
+                        function(){
+                            if(params.showNo){
+                                return $("<td/>").append(
+                                    document.createTextNode(params.number(idx))
+                                )
+                            }
+                        }(),
+                        function(){
+                            if(params.showCheckbox){
+                                return $("<td/>").append(
+                                    $("<label/>",{
+                                        "class":"table-right-checkbox"
+                                    }).append(
+                                        function(){
+                                            var checkbox=document.createElement("input");
+                                            checkbox.type="checkbox";
+                                            checkbox.checked=!!_data.checked;
+                                            checkbox.addEventListener("change",function(){
+                                                _data.checked=this.checked;
+                                                _render.call($self);
+                                            });
+                                            return [
+                                                checkbox,
+                                                $("<span/>",{
+                                                    "class":"table-checkbox-container"
+                                                })
+                                            ]
+                                        }()
                                     )
-                                }
-                            }(),
-                            function(){
-                                if(params.showCheckbox){
-                                    return $("<td/>").append(
-                                        $("<label/>",{
-                                            "class":"table-right-checkbox"
-                                        }).append(
-                                            function(){
-                                                var checkbox=document.createElement("input");
-                                                checkbox.type="checkbox";
-                                                checkbox.checked=!!_data.checked;
-                                                checkbox.addEventListener("change",function(){
-                                                    _data.checked=this.checked;
-                                                    _render.call($self);
-                                                });
-                                                return [
-                                                    checkbox,
-                                                    $("<span/>",{
-                                                        "class":"table-checkbox-container"
-                                                    })
-                                                ]
-                                            }()
-                                        )
-                                    )
-                                }
-                            }(),
-                            (params.columns||[]).map(function(column){
-                                return $("<td/>",{
-                                    html:function(){
-                                        var formatter=column.formatter;
-                                        if(formatter){
-                                            return formatter(data[column.field],data,idx);
-                                        }
-                                        return data[column.field];
+                                )
+                            }
+                        }(),
+                        Object.keys(_columns).map(function(field){
+                            return $("<td/>",{
+                                html:function(){
+                                    var formatter=_columns[field].formatter;
+                                    if(_columns[field].formatter){
+                                        return formatter(data[field],data,idx);
                                     }
-                                })
+                                    return data[field];
+                                }
                             })
-                        )
-                        row.on(Object.keys(params.rowEvents).reduce(function(target,key){
-                            target[key]=params.rowEvents[key].bind(row,data,idx);
-                            return target;
-                        },{}));
-                        return row;
-                    })
-                }
-
+                        })
+                    )
+                    row.on(Object.keys(params.rowEvents).reduce(function(target,key){
+                        target[key]=params.rowEvents[key].bind(row,data,idx);
+                        return target;
+                    },{}));
+                    return row;
+                })
             )
         ]);
     }
