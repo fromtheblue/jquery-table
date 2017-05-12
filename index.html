@@ -23,6 +23,8 @@
 <script src="jquery-table/jquery-table.js"></script>
 <script src="data.js"></script>
 <script>
+    /*计划开始时间顺序一开始是降序*/
+    var plannedStartTimeOrder="desc";
     $("#table").table({
         showNo:true,
         number:function(i){
@@ -57,7 +59,26 @@
             title:"单位",
             field:"employer"
         },{
-            title:"计划开始时间",
+            title:function(field){
+                return [
+                    document.createTextNode("计划开始时间"),
+                    $("<span/>",{
+                        "class":function(){
+                            var cls="glyphicon ";
+                            cls+=plannedStartTimeOrder==="desc"?"glyphicon-triangle-top":"glyphicon-triangle-bottom";
+                            return cls;
+                        },
+                        click:function(){
+                            console.log("字段是:"+field);
+                            /*这里可以请求ajax然后使用返回的数据渲染表格,这里setTimeout是模拟ajax异步*/
+                            setTimeout(function(){
+                                plannedStartTimeOrder=plannedStartTimeOrder==="desc"?"asc":"desc";
+                                $("#table").table("setDatas",datas);
+                            },100);
+                        }
+                    })
+                ];
+            },
             field:"plannedStartTime",
             formatter:function(value,rowData,rowIndex){
                 if(!value){

@@ -26,6 +26,9 @@
  *      columns[{field:string,title:string,formatter:function(value,rowData,idx)}]
  *             field  每列的字段名称
  *             title  每列的表头
+ *                    string or function(field)
+ *                    当值为string时,直接将值渲染到表头,
+ *                    当值为function的时候,function 返回值作为表头
  *             formatter 自定义每列的显示格式
  *                    value 填充单元格的原始数据
  *                    rowData 填充当前行的原始数据
@@ -234,7 +237,12 @@
                     }(),
                     params.columns.map(function(column){
                         return $("<th/>").append(
-                            document.createTextNode(column.title)
+                            function(){
+                                if(typeof column.title === "function"){
+                                    return column.title(column.field);
+                                }
+                                return document.createTextNode(column.title)
+                            }
                         )
                     })
                 )
