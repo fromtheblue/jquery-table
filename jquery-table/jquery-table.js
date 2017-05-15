@@ -5,6 +5,8 @@
  *              id:"id",  指定数据中的索引字段名称
  *              cls:"table table-striped table-hover", 指定表格的class
  *              headCls:"table-thead", 指定表头的class
+ *              expandCls:"expandCls", 指定详情行的class
+ *              singleExpand:true, 详情行是否每次只能展示一个
  *              showNo:true, 是否显示行号
  *              showCheckbox:true, 是否显示复选框
  *              select:true, 行是否可以被选中
@@ -23,12 +25,13 @@
  *                      idx 当前点击行所在的行数
  *                      e 事件对象
  *                      this 触发事件的行(td)的jquery对象
- *      columns[{field:string,title:string,formatter:function(value,rowData,idx)}]
+ *      columns[{field:string,title:string,expand:boolean,formatter:function(value,rowData,idx)}]
  *             field  每列的字段名称
  *             title  每列的表头
  *                    string or function(field)
  *                    当值为string时,直接将值渲染到表头,
  *                    当值为function的时候,function 返回值作为表头
+ *             expand 该行为详情行,详情行只能设置一个且设置为详情行以后title将失效
  *             formatter 自定义每列的显示格式
  *                    value 填充单元格的原始数据
  *                    rowData 填充当前行的原始数据
@@ -41,14 +44,23 @@
  *              setDatas(datas) 重新渲染数据
  *              check(ids) 选中表格数据（复选框被选中）
  *                      ids 要选中的原始数据的id集合,只能是数字,字符串和数组类型
+ *              expand(id) 将该条数据的详情行展示出来
+ *                      id 要展示详情行的数据的id
+ *              unexpand(id) 将该条数据的详情行隐藏起来
+ *                      id 要隐藏详情行的数据的id
+ *              toggleExpand(id) 切换该条数据的详情行的显示隐藏
+ *                      id 要切换显示隐藏详情行的数据的id
  */
 (function($){
     if($.fn.table){
         return;
     }
     var setMethods={
-        setDatas:setDatas,
-        "check":check
+        "setDatas":setDatas,
+        "check":check,
+        "expand":expand,
+        "unexpand":unexpand,
+        "toggleExpand":toggleExpand
     };
     var getMethods={
         getChecked:getChecked,
@@ -90,6 +102,8 @@
         id:"id",
         cls:"table table-striped table-hover",
         headCls:"table-thead",
+        expandCls:"expandCls",
+        singleExpand:true,
         showNo:true,
         showCheckbox:true,
         select:true,
@@ -154,6 +168,52 @@
                 })||_data.checked;
         })
     }
+    function expand(idx){
+        var $self = this,
+            params = $self.data('table'),
+            id = params.id,
+            _datas = params._datas;
+        if(params.singleExpand){
+            _datas.forEach(function(_data){
+                _data.expand=false;
+            })
+        }
+        _datas.forEach(function(_data){
+            var data=_data.data;
+            if(data[id]==idx){
+                _data.expand=true;
+            }
+        })
+    }
+    function unexpand(idx){
+        var $self = this,
+            params = $self.data('table'),
+            id = params.id,
+            _datas = params._datas;
+        _datas.forEach(function(_data){
+            var data=_data.data;
+            if(data[id]==idx){
+                _data.expand=false;
+            }
+        })
+    }
+    function toggleExpand(idx){
+        var $self = this,
+            params = $self.data('table'),
+            id = params.id,
+            _datas = params._datas;
+        if(params.singleExpand){
+            _datas.forEach(function(_data){
+                _data.expand=false;
+            })
+        }
+        _datas.forEach(function(_data){
+            var data=_data.data;
+            if(data[id]==idx){
+                _data.expand=!_data.expand;
+            }
+        })
+    }
     function getChecked(){
         return this.data("table")._datas.filter(function(_data){
             return _data.checked;
@@ -183,10 +243,19 @@
     function _render(){
         var $self=this;
         var params=$self.data("table");
+        var _expandColumn;
+        var expandCls=params.expandCls;
         var _columns=params.columns.reduce(function(target,column){
-            target[column.field]=column;
+            if(column.type!=="expand"){
+                target[column.field]=column;
+            }else{
+                _expandColumn=column;
+            }
             return target;
         },{});
+        var headers=params.columns.filter(function(column){
+           return column.type!=="expand";
+        });
         this.addClass(params.cls).html([
             $("<thead/>",{
                 "class":params.headCls
@@ -235,7 +304,7 @@
                             )
                         }
                     }(),
-                    params.columns.map(function(column){
+                    headers.map(function(column){
                         return $("<th/>").append(
                             function(){
                                 if(typeof column.title === "function"){
@@ -248,7 +317,7 @@
                 )
             ),
             $("<tbody/>").append(
-                params._datas.map(function(_data,idx){
+                params._datas.reduce(function(_target,_data,idx){
                     var data=_data.data;
                     var row = $("<tr/>",{
                         "click":function(event){
@@ -305,19 +374,48 @@
                                 html:function(){
                                     var formatter=_columns[field].formatter;
                                     if(_columns[field].formatter){
-                                        return formatter(data[field],data,idx);
+                                        return formatter.call($self,data[field],data,idx);
                                     }
                                     return data[field];
                                 }
                             })
                         })
-                    )
+                    );
                     row.on(Object.keys(params.rowEvents).reduce(function(target,key){
                         target[key]=params.rowEvents[key].bind(row,data,idx);
                         return target;
                     },{}));
-                    return row;
-                })
+                    _target.push(row);
+                    if(_expandColumn){
+                        _target.push($("<tr/>",{
+                            "class":function(){
+                                return expandCls+(_data.expand?"":" hidden");
+                            }
+                        }).append(
+                            $("<td/>",{
+                                "colspan":function(){
+                                    var length=headers.length;
+                                    if(params.showNo){
+                                        length+=1;
+                                    }
+                                    if(params.showCheckbox){
+                                        length+=1;
+                                    }
+                                    return length;
+                                },
+                                html:function(){
+                                    var field=_expandColumn.field;
+                                    var formatter=_expandColumn.formatter;
+                                    if(formatter){
+                                        return formatter.call($self,data[field],data,idx);
+                                    }
+                                    return data[field];
+                                }
+                            })
+                        ),document.createElement("tr"));
+                    }
+                    return _target;
+                },[])
             )
         ]);
     }

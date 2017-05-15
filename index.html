@@ -9,6 +9,10 @@
         body{
             padding: 20px;
         }
+        .expand-content{
+            background-color:lightcyan;
+            padding: 15px;
+        }
     </style>
 </head>
 <body>
@@ -33,6 +37,7 @@
         showCheckbox:true,
         select:true,
         singleSelect:true,
+        singleExpand:false,
         rowEvents:{
             click:function(rowData,idx,e){
                 console.log(this);
@@ -147,6 +152,28 @@
                         document.createTextNode("查看")
                     )
                 ]
+            }
+        },{
+            title:"展开详情",
+            field:"id",
+            formatter:function(value,rowData,rowIndex){
+                var _self=this;
+                return $("<a/>",{
+                    "class":"btn btn-warning btn-xs",
+                    "text":"展开",
+                    "click":function(){
+                        _self.table("toggleExpand",value);
+                    }
+                })
+            }
+        },{
+            field:"id",
+            type:"expand",
+            formatter:function(value,rowData,rowIndex){
+                return $("<div/>",{
+                    "class":"expand-content",
+                    "html":JSON.stringify(rowData)
+                })
             }
         }]
     });

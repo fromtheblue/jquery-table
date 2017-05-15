@@ -22,6 +22,10 @@
 .table .selected{
     background-color: #e5e6e8!important;
 }
+.expandCls{
+    text-align: left;
+    vertical-align: initial;
+}
 /*table中的复选框*/
 .table label{
     margin: 0;
