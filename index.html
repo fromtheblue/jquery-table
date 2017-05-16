@@ -220,7 +220,7 @@
     $("#render").on("click",function(){
         datas.shift();//这句话把000001的数据删除掉了
         datas.push({
-            id:"000006",
+            id:new Date().getTime(),
             taskno:"201611006",
             batchno:"006",
             employer:"山东电力公司",
