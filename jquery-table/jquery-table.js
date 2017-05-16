@@ -36,6 +36,10 @@
  *                    value 填充单元格的原始数据
  *                    rowData 填充当前行的原始数据
  *                    idx 当前行所在的行数
+ *     footer:function(datas,columnLength)
+ *            生成表格底部的格式化函数,返回值将作为表格的tfoot下面的tr下面的内容
+ *                    datas是生成表格的数据,
+ *                    columnLength是表格的列数
  *     methods:
  *              getChecked 获取所有被复选框选中的数据
  *              getCheckedIDs 获取所有被复选框选中的数据的id字符串
@@ -50,6 +54,7 @@
  *                      id 要隐藏详情行的数据的id
  *              toggleExpand(id) 切换该条数据的详情行的显示隐藏
  *                      id 要切换显示隐藏详情行的数据的id
+ *              refresh 刷新表格
  */
 (function($){
     if($.fn.table){
@@ -60,7 +65,8 @@
         "check":check,
         "expand":expand,
         "unexpand":unexpand,
-        "toggleExpand":toggleExpand
+        "toggleExpand":toggleExpand,
+        "refresh":refresh
     };
     var getMethods={
         getChecked:getChecked,
@@ -113,7 +119,10 @@
         },
         datas:[],
         columns:[],
-        rowEvents:{}
+        rowEvents:{},
+        footer:function(){
+
+        }
     }
     function _init(params){
         params._datas=params.datas.map(function(data){
@@ -214,6 +223,9 @@
             }
         })
     }
+    function refresh(){
+
+    }
     function getChecked(){
         return this.data("table")._datas.filter(function(_data){
             return _data.checked;
@@ -245,17 +257,20 @@
         var params=$self.data("table");
         var _expandColumn;
         var expandCls=params.expandCls;
+        var footer=params.footer;
+        var datas=params.datas;
         var _columns=params.columns.reduce(function(target,column){
             if(column.type!=="expand"){
-                target[column.field]=column;
+                target.push(column);
             }else{
                 _expandColumn=column;
             }
             return target;
-        },{});
+        },[]);
         var headers=params.columns.filter(function(column){
            return column.type!=="expand";
         });
+        var columnLength=headers.length+(params.showNo?1:0)+(params.showCheckbox?1:0);
         this.addClass(params.cls).html([
             $("<thead/>",{
                 "class":params.headCls
@@ -369,14 +384,14 @@
                                 )
                             }
                         }(),
-                        Object.keys(_columns).map(function(field){
+                        _columns.map(function(_column){
                             return $("<td/>",{
                                 html:function(){
-                                    var formatter=_columns[field].formatter;
-                                    if(_columns[field].formatter){
-                                        return formatter.call($self,data[field],data,idx);
+                                    var formatter=_column.formatter;
+                                    if(formatter){
+                                        return formatter.call($self,data[_column.field],data,idx);
                                     }
-                                    return data[field];
+                                    return data[_column.field];
                                 }
                             })
                         })
@@ -393,16 +408,7 @@
                             }
                         }).append(
                             $("<td/>",{
-                                "colspan":function(){
-                                    var length=headers.length;
-                                    if(params.showNo){
-                                        length+=1;
-                                    }
-                                    if(params.showCheckbox){
-                                        length+=1;
-                                    }
-                                    return length;
-                                },
+                                "colspan":columnLength,
                                 html:function(){
                                     var field=_expandColumn.field;
                                     var formatter=_expandColumn.formatter;
@@ -418,7 +424,15 @@
                     }
                     return _target;
                 },[])
-            )
+            ),
+            function(){
+                var footContent=footer.call($self,datas,columnLength);
+                if(footContent){
+                    return $("<tfoot/>").append(
+                        $("<tr/>").append(footContent)
+                    )
+                }
+            }()
         ]);
     }
 })(jQuery);

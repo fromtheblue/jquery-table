@@ -35,7 +35,7 @@
             return i+1;
         },
         showCheckbox:true,
-        select:true,
+        select:false,
         singleSelect:true,
         singleExpand:false,
         rowEvents:{
@@ -154,6 +154,21 @@
                 ]
             }
         },{
+            title:"一个",
+            field:"id",
+            formatter:function(value,rowData,rowIndex){
+                var $self=this;
+                return $("<input/>",{
+                    val:rowData.batchno,
+                    "keyup":function(event){
+                        if(event.keyCode==13){
+                            rowData.batchno=this.value;
+                            $self.table("refresh");
+                        }
+                    }
+                })
+            }
+        },{
             title:"展开详情",
             field:"id",
             formatter:function(value,rowData,rowIndex){
@@ -175,7 +190,20 @@
                     "html":JSON.stringify(rowData)
                 })
             }
-        }]
+        }],
+        footer:function(datas,columnLength){
+            return [
+                    $("<td/>",{
+                        text:"总计"
+                    }),
+                    $("<td/>",{
+                        "colspan":columnLength-2
+                    }),
+                    $("<td/>",{
+                        text:datas.length+"条数据"
+                    })
+            ]
+        }
     });
     $("#getChecked").on("click",function(){
         console.log($("#table").table("getChecked"));
