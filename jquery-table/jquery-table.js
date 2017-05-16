@@ -412,7 +412,9 @@
                                     return data[field];
                                 }
                             })
-                        ),document.createElement("tr"));
+                        ),$("<tr/>",{
+                            "class":"hidden"
+                        }));
                     }
                     return _target;
                 },[])
