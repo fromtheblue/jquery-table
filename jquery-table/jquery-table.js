@@ -25,8 +25,9 @@
  *                      idx 当前点击行所在的行数
  *                      e 事件对象
  *                      this 触发事件的行(td)的jquery对象
- *      columns[{field:string,title:string,expand:boolean,formatter:function(value,rowData,idx)}]
+ *      columns[{field:string,cls:string,title:string,expand:boolean,formatter:function(value,rowData,idx)}]
  *             field  每列的字段名称
+ *             cls 每个表头的class
  *             title  每列的表头
  *                    string or function(field)
  *                    当值为string时,直接将值渲染到表头,
@@ -320,7 +321,9 @@
                         }
                     }(),
                     headers.map(function(column){
-                        return $("<th/>").append(
+                        return $("<th/>",{
+                            "class":column.cls||""
+                        }).append(
                             function(){
                                 if(typeof column.title === "function"){
                                     return column.title(column.field);
