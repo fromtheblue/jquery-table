@@ -25,7 +25,7 @@
  *                      idx 当前点击行所在的行数
  *                      e 事件对象
  *                      this 触发事件的行(td)的jquery对象
- *      columns[{field:string,cls:string,title:string,expand:boolean,formatter:function(value,rowData,idx)}]
+ *      columns[{field:string,cls:string,title:string,expand:boolean,formatter:function(value,rowData,idx,field)}]
  *             field  每列的字段名称
  *             cls 每个表头的class
  *             title  每列的表头
