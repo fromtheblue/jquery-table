@@ -37,6 +37,7 @@
  *                    value 填充单元格的原始数据
  *                    rowData 填充当前行的原始数据
  *                    idx 当前行所在的行数
+ *                    field 字段名
  *     footer:function(datas,columnLength)
  *            生成表格底部的格式化函数,返回值将作为表格的tfoot下面的tr下面的内容
  *                    datas是生成表格的数据,
@@ -392,7 +393,7 @@
                                 html:function(){
                                     var formatter=_column.formatter;
                                     if(formatter){
-                                        return formatter.call($self,data[_column.field],data,idx);
+                                        return formatter.call($self,data[_column.field],data,idx,_column.field);
                                     }
                                     return data[_column.field];
                                 }
@@ -416,7 +417,7 @@
                                     var field=_expandColumn.field;
                                     var formatter=_expandColumn.formatter;
                                     if(formatter){
-                                        return formatter.call($self,data[field],data,idx);
+                                        return formatter.call($self,data[field],data,idx,field);
                                     }
                                     return data[field];
                                 }
