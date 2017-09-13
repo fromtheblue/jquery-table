@@ -9,8 +9,10 @@ var datas=[{
     plannedStartTime:new Date().toLocaleDateString(),
     startTime:new Date().toLocaleDateString(),
     endTime:new Date().toLocaleDateString(),
+    analysisResult:"1",
     status:"-1",
-    result:"1"
+    result:"1",
+    message:true
 },{
     id:"000002",
     taskno:"201611002",
@@ -19,8 +21,10 @@ var datas=[{
     plannedStartTime:"",
     startTime:new Date().toLocaleDateString(),
     endTime:new Date().toLocaleDateString(),
+    analysisResult:"",
     status:"0",
-    result:""
+    result:"",
+    message:false
 },{
     id:"000003",
     taskno:"201611003",
@@ -29,8 +33,10 @@ var datas=[{
     plannedStartTime:new Date().toLocaleDateString(),
     startTime:"",
     endTime:new Date().toLocaleDateString(),
+    analysisResult:"",
     status:"1",
-    result:"1"
+    result:"1",
+    message:true
 },{
     id:"000004",
     taskno:"201611004",
@@ -39,8 +45,10 @@ var datas=[{
     plannedStartTime:new Date().toLocaleDateString(),
     startTime:new Date().toLocaleDateString(),
     endTime:"",
+    analysisResult:"",
     status:"2",
-    result:""
+    result:"",
+    message:true
 },{
     id:"000005",
     taskno:"201611005",
@@ -49,6 +57,8 @@ var datas=[{
     plannedStartTime:new Date().toLocaleDateString(),
     startTime:new Date().toLocaleDateString(),
     endTime:new Date().toLocaleDateString(),
+    analysisResult:"3",
     status:"",
-    result:"3"
+    result:"3",
+    message:false
 }];

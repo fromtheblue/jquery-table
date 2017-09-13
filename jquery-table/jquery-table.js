@@ -29,7 +29,7 @@
  *             field  每列的字段名称
  *             cls 每个表头的class
  *             title  每列的表头
- *                    string or function(field)
+ *                    string or function(field,column)
  *                    当值为string时,直接将值渲染到表头,
  *                    当值为function的时候,function 返回值作为表头
  *             expand 该行为详情行,详情行只能设置一个且设置为详情行以后title将失效
@@ -327,7 +327,7 @@
                         }).append(
                             function(){
                                 if(typeof column.title === "function"){
-                                    return column.title(column.field);
+                                    return column.title.call($self,column.field,column);
                                 }
                                 return document.createTextNode(column.title)
                             }
