@@ -19,6 +19,9 @@
 .table-checkbox{
     width: 5em;
 }
+.table-head-radio{
+    width:4em;
+}
 .table .selected{
     background-color: #e5e6e8!important;
 }
@@ -83,3 +86,38 @@
     display: inline-block;
 }
 /*!table中的复选框*/
+/*table中的单选框*/
+.table-radio{
+    color: #0d84d4;
+    width: 1em;
+    height: 1em;
+    padding: 2px;
+    border: 1px solid;
+    display: inline-block;
+    border-radius: 50%;
+    box-sizing: content-box;
+    vertical-align: middle;
+}
+.table-radio>input{
+    position: absolute;
+    margin: 0;
+    opacity: 0;
+    vertical-align: bottom;
+}
+.table-radio>input+.table-radio-container{
+    display: inline-block;
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+    transition: background-color .3s;
+    box-sizing: content-box;
+    vertical-align: top;
+}
+.table-radio>input:checked+.table-radio-container{
+    background-color: currentColor;
+}
+.table-radio::after{
+    content:"r";
+    opacity: 0;
+}
+/*!table中的单选框*/

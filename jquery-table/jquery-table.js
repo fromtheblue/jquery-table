@@ -11,6 +11,7 @@
  *              showCheckbox:true, 是否显示复选框
  *              select:true, 行是否可以被选中
  *              singleSelect:true, 行的选中方式是否只支持单选
+ *              showRadio:true, 是否显示单选框(当显示复选框时将不展示)
  *              number:function(i){ 行号的格式
  *                  return i+1;
  *              },
@@ -116,6 +117,7 @@
         showCheckbox:true,
         select:true,
         singleSelect:true,
+        showRadio:true,
         number:function(i){
             return i+1;
         },
@@ -319,6 +321,12 @@
                                     document.createTextNode(" 选择")
                                 )
                             )
+                        }else if(params.showRadio){
+                            return $("<th/>",{
+                                "class":"table-head-radio"
+                            }).append(
+                                document.createTextNode(" 选择")
+                            )
                         }
                     }(),
                     headers.map(function(column){
@@ -381,6 +389,39 @@
                                                 checkbox,
                                                 $("<span/>",{
                                                     "class":"table-checkbox-container"
+                                                })
+                                            ]
+                                        }()
+                                    )
+                                )
+                            }else if(params.showRadio){
+                                return $("<td/>").append(
+                                    $("<label/>",{
+                                        "class":"table-radio"
+                                    }).append(
+                                        function(){
+                                           /* 如果是单选框,当所有数据都未选中时,选中表格中的第一个 */
+                                            if(!idx){
+                                                if(params._datas.every(function(item){
+                                                    return !item.checked;
+                                                })){
+                                                    _data.checked=true;
+                                                }
+                                            }
+                                            var radio=document.createElement("input");
+                                            radio.type="radio";
+                                            radio.checked=!!_data.checked;
+                                            radio.addEventListener("change",function(){
+                                                params._datas.forEach(function(item){
+                                                    item.checked=false;
+                                                })
+                                                _data.checked=this.checked;
+                                                _render.call($self);
+                                            });
+                                            return [
+                                                radio,
+                                                $("<span/>",{
+                                                    "class":"table-radio-container"
                                                 })
                                             ]
                                         }()
