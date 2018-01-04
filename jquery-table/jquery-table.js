@@ -325,7 +325,7 @@
                             return $("<th/>",{
                                 "class":"table-head-radio"
                             }).append(
-                                document.createTextNode(" 选择")
+                                document.createTextNode("选择")
                             )
                         }
                     }(),
