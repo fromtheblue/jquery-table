@@ -46,6 +46,9 @@
     -webkit-user-select: none;
     user-select: none;
 }
+.table-right-checkbox.disabled{
+    cursor: not-allowed;
+}
 .table-right-checkbox>input{
     position: absolute;
     margin: 0;
@@ -62,9 +65,15 @@
     border-radius: 4px;
     background-color: white;
 }
+.table-right-checkbox>input:disabled+.table-checkbox-container{
+    border-color: rgb(220,220,220);
+}
 .table-right-checkbox>input:checked+.table-checkbox-container{
     color: #0d84d4;
     border: 1px solid currentColor;
+}
+.table-right-checkbox>input:checked:disabled+.table-checkbox-container{
+    color: rgb(220,220,220);
 }
 .table-right-checkbox>input+.table-checkbox-container::before{
     content: "\2713";
@@ -97,6 +106,9 @@
     border-radius: 50%;
     box-sizing: content-box;
     vertical-align: middle;
+}
+.table-radio.disabled{
+    color: rgb(200,200,200);
 }
 .table-radio>input{
     position: absolute;

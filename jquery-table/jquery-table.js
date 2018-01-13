@@ -16,6 +16,8 @@
  *                  return i+1;
  *              },
  *              rowEvents:{} 添加事件对象,跟jquery的添加事件相同
+ *              onChecked:function(rowData){} 被选中事件
+ *              onUnchecked:function(rowData){} 取消被选中事件
  *              datas:[], 填充表格的数据
  *              columns:[] 列
  *              }
@@ -58,6 +60,8 @@
  *              toggleExpand(id) 切换该条数据的详情行的显示隐藏
  *                      id 要切换显示隐藏详情行的数据的id
  *              refresh 刷新表格
+ *              disableToggleChecked(ids) 让数据成为不可改变选中状态
+ *                      ids 要选中的原始数据的id集合,只能是数字,字符串和数组类型
  */
 (function($){
     if($.fn.table){
@@ -66,6 +70,7 @@
     var setMethods={
         "setDatas":setDatas,
         "check":check,
+        "disableToggleChecked":disableToggleChecked,
         "expand":expand,
         "unexpand":unexpand,
         "toggleExpand":toggleExpand,
@@ -124,6 +129,8 @@
         datas:[],
         columns:[],
         rowEvents:{},
+        onChecked:function(rowData){},
+        onUnchecked:function(rowData){},
         footer:function(){
 
         }
@@ -160,6 +167,8 @@
     function check(ids) {
         var $self = this,
             params = this.data('table'),
+            onChecked = params.onChecked,
+            onUnchecked = params.onUnchecked,
             id = params.id,
             _datas = params._datas;
         if(typeof ids == "number"){
@@ -177,8 +186,33 @@
              *当id不在ids中，则当前数据的选中状态仍保留原值
              * */
             _data.checked=ids.some(function(idx){
-                    return idx==_data.data[id];
+                    if(idx==_data.data[id]){
+                        /* 触发选中事件 */
+                        onChecked(_data.data);
+                        return true;
+                    }
+                    return false;
                 })||_data.checked;
+        })
+    }
+    function disableToggleChecked(ids){
+        var $self = this,
+            params = this.data('table'),
+            id = params.id,
+            _datas = params._datas;
+        if(typeof ids == "number"){
+            ids = ""+ids;
+        }
+        if(typeof ids == "string"){
+            ids = ids.split(",");
+        }
+        if(!(ids instanceof Array)){
+            throw new Error('The params must be Array or Number or String');
+        }
+        _datas.forEach(function (_data) {
+            _data.disableToggleChecked=ids.some(function(idx){
+                return idx==_data.data[id];
+            });
         })
     }
     function expand(idx){
@@ -259,6 +293,8 @@
     function _render(){
         var $self=this;
         var params=$self.data("table");
+        var onChecked=params.onChecked;
+        var onUnchecked=params.onUnchecked;
         var _expandColumn;
         var expandCls=params.expandCls;
         var footer=params.footer;
@@ -301,12 +337,21 @@
                                         function(){
                                             var checkbox=document.createElement("input");
                                             checkbox.type="checkbox";
-                                            checkbox.checked=params._datas.every(function(_data){
+                                            checkbox.checked=params._datas.filter(function(_data){
+                                                /* 排除掉不可修改状态的数据 */
+                                                return !_data.disableToggleChecked;
+                                            }).every(function(_data){
                                                 return _data.checked;
                                             });
                                             checkbox.addEventListener("change",function(){
                                                 params._datas.forEach(function(_data){
+                                                    /* 如果该数据是不可修改选中状态，那么保持不变 */
+                                                    if(_data.disableToggleChecked){
+                                                        return;
+                                                    }
                                                     _data.checked=checkbox.checked;
+                                                    /* 触发被选中事件或被取消选中事件 */
+                                                    checkbox.checked?onChecked(_data.data):onUnchecked(_data.data);
                                                 });
                                                 _render.call($self);
                                             });
@@ -375,14 +420,24 @@
                             if(params.showCheckbox){
                                 return $("<td/>").append(
                                     $("<label/>",{
-                                        "class":"table-right-checkbox"
+                                        "class":function(){
+                                            var cls = "table-right-checkbox";
+                                            if(_data.disableToggleChecked){
+                                                cls+=" disabled";
+                                            }
+                                            return cls;
+                                        }
                                     }).append(
                                         function(){
                                             var checkbox=document.createElement("input");
                                             checkbox.type="checkbox";
                                             checkbox.checked=!!_data.checked;
+                                            /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
+                                            checkbox.disabled=_data.disableToggleChecked;
                                             checkbox.addEventListener("change",function(){
                                                 _data.checked=this.checked;
+                                                /* 触发被选中事件或被取消选中事件 */
+                                                this.checked?onChecked(_data.data):onUnchecked(_data.data);
                                                 _render.call($self);
                                             });
                                             return [
@@ -397,7 +452,13 @@
                             }else if(params.showRadio){
                                 return $("<td/>").append(
                                     $("<label/>",{
-                                        "class":"table-radio"
+                                        "class":function(){
+                                            var cls = "table-radio";
+                                            if(_data.disableToggleChecked){
+                                                cls+=" disabled"
+                                            }
+                                            return cls;
+                                        }
                                     }).append(
                                         function(){
                                            /* 如果是单选框,当所有数据都未选中时,选中表格中的第一个 */
@@ -411,11 +472,15 @@
                                             var radio=document.createElement("input");
                                             radio.type="radio";
                                             radio.checked=!!_data.checked;
+                                            /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
+                                            radio.disabled=_data.disableToggleChecked;
                                             radio.addEventListener("change",function(){
                                                 params._datas.forEach(function(item){
                                                     item.checked=false;
                                                 })
                                                 _data.checked=this.checked;
+                                                /* 触发被选中事件或被取消选中事件 */
+                                                this.checked?onChecked(_data.data):onUnchecked(_data.data);
                                                 _render.call($self);
                                             });
                                             return [

@@ -43,7 +43,7 @@
         number:function(i){
             return i+1;
         },
-        showCheckbox:false,
+        showCheckbox:true,
         showRadio:true,
         select:false,
         singleSelect:true,
@@ -56,6 +56,12 @@
             mousedown:function(rowData,idx,e){
                 console.log("mousedown",arguments);
             }
+        },
+        onChecked:function(rowData){
+            console.log(rowData);
+        },
+        onUnchecked:function(rowData){
+            console.log(rowData);
         },
         datas:datas,
         columns:[{
@@ -324,7 +330,7 @@
                     })
             ]
         }
-    });
+    }).table("check",["000001"]).table("disableToggleChecked",["000001","000002"]);
     $("#getChecked").on("click",function(){
         console.log($("#table").table("getChecked"));
     });
