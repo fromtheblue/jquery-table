@@ -129,7 +129,7 @@
         select: false,
         singleSelect: false,
         showRadio: true,
-        noRowMsgnoRowMsg: function (datas) {
+        noRowMsg: function (datas) {
             return datas ? "未获取到数据" : "数据加载异常";
         },
         number: function (i) {
