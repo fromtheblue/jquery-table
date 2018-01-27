@@ -1,364 +1,377 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>jquery-table</title>
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="jquery-table/jquery-table.css">
     <style>
-        body{
+        body {
             padding: 20px;
         }
-        .expand-content{
-            background-color:lightcyan;
+
+        .expand-content {
+            background-color: lightcyan;
             padding: 15px;
         }
-        .red{
+
+        .red {
             color: red;
         }
-        .analysis{
+
+        .analysis {
             width: 250px;
         }
-        th.messageCls .table-right-checkbox{
+
+        th.messageCls .table-right-checkbox {
             padding-right: 3px;
+        }
+        .table th{
+            border: 1px solid #ccc;
+        }
+        .demo-input{
+            width: 100%;
         }
     </style>
 </head>
+
 <body>
-<table id="table"></table>
-<button id="getChecked">获取被复选框选中的数据</button>
-<button id="getCheckedIDs">获取被复选框选中的数据的ID</button>
-<button id="getSelected">获取被选中的数据</button>
-<button id="getSelectedIDs">获取被选中的数据的ID</button>
-<button id="render">渲染数据</button>
-<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="jquery-table/jquery-table.js"></script>
-<script src="data.js"></script>
-<script>
-    /*计划开始时间顺序一开始是降序*/
-    var plannedStartTimeOrder="desc";
-    $("#table").table({
-        showNo:true,
-        number:function(i){
-            return i+1;
-        },
-        showCheckbox:true,
-        showRadio:true,
-        select:false,
-        singleSelect:true,
-        singleExpand:false,
-        rowEvents:{
-            click:function(rowData,idx,e){
-                console.log(this);
-                console.log("click",arguments);
+    <table id="table"></table>
+    <button id="getChecked">获取被复选框选中的数据</button>
+    <button id="getCheckedIDs">获取被复选框选中的数据的ID</button>
+    <button id="getSelected">获取被选中的数据</button>
+    <button id="getSelectedIDs">获取被选中的数据的ID</button>
+    <button id="render">渲染数据</button>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="jquery-table/jquery-table.js"></script>
+    <script src="data.js"></script>
+    <script>
+        /*计划开始时间顺序一开始是降序*/
+        var plannedStartTimeOrder = "desc";
+        $("#table").table({
+            showNo: true,
+            number: function (i) {
+                return i + 1;
             },
-            mousedown:function(rowData,idx,e){
-                console.log("mousedown",arguments);
-            }
-        },
-        onChecked:function(rowData){
-            console.log(rowData);
-        },
-        onUnchecked:function(rowData){
-            console.log(rowData);
-        },
-        datas:datas,
-        columns:[{
-            title:"任务编号",
-            field:"taskno",
-            cls:"red"
-        },{
-            title:"批次号",
-            field:"batchno",
-            formatter:function(value,rowData,rowIndex){
-                return $("<span/>",{
-                    "style":"color:#0d84d4;",
-                    "text":value
-                })
-            }
-        },{
-            title:function(field,rowIndex){
-                var $self = this;
-                return $("<label/>").append(
-                    $("<label/>",{
-                        "class":"table-right-checkbox"
+            showCheckbox: true,
+            showRadio: true,
+            select: false,
+            singleSelect: true,
+            singleExpand: false,
+            rowEvents: {
+                click: function (rowData, idx, e) {
+                    console.log(this);
+                    console.log("click", arguments);
+                },
+                mousedown: function (rowData, idx, e) {
+                    console.log("mousedown", arguments);
+                }
+            },
+            onChecked: function (rowData) {
+                console.log(rowData);
+            },
+            onUnchecked: function (rowData) {
+                console.log(rowData);
+            },
+            datas: datas,
+            columns: [{
+                title: "任务编号",
+                field: "taskno",
+                cls: "red"
+            }, {
+                title: "批次号",
+                field: "batchno",
+                formatter: function (value, rowData, rowIndex) {
+                    return $("<span/>", {
+                        "style": "color:#0d84d4;",
+                        "text": value
+                    })
+                }
+            }, {
+                title: function (field, rowIndex) {
+                    var $self = this;
+                    return $("<label/>").append(
+                        $("<label/>", {
+                            "class": "table-right-checkbox"
+                        }).append(
+                            [$("<input/>", {
+                                "type": "checkbox",
+                                "checked": function () {
+                                    var _datas = $self.data("table")._datas;
+                                    return _datas.every(function (_data) {
+                                        return _data.data.message;
+                                    });
+                                },
+                                "click": function (event) {
+                                    var _this = this;
+                                    var _datas = $self.data("table")._datas;
+                                    _datas.forEach(function (_data) {
+                                        _data.data.message = _this.checked;
+                                    });
+                                    $self.table("refresh");
+                                }
+                            }), $("<span/>", {
+                                "class": "table-checkbox-container"
+                            })]
+                            ),
+                        document.createTextNode("短信通知")
+                    )
+                },
+                cls: "messageCls",
+                field: "message",
+                formatter: function (value, rowData) {
+                    var $self = this;
+                    return $("<label/>", {
+                        "class": "table-right-checkbox"
                     }).append(
-                        [$("<input/>",{
-                            "type":"checkbox",
-                            "checked":function(){
-                                var _datas = $self.data("table")._datas;
-                                return _datas.every(function(_data){
-                                    return _data.data.message;
-                                });
-                            },
-                            "click":function(event){
-                                var _this = this;
-                                var _datas = $self.data("table")._datas;
-                                _datas.forEach(function(_data){
-                                    _data.data.message=_this.checked;
-                                });
+                        [$("<input/>", {
+                            "type": "checkbox",
+                            "checked": value,
+                            "click": function (event) {
+                                rowData.message = !value;
                                 $self.table("refresh");
                             }
-                        }),$("<span/>",{
-                            "class":"table-checkbox-container"
+                        }), $("<span/>", {
+                            "class": "table-checkbox-container"
                         })]
-                    ),
-                    document.createTextNode("短信通知")
-                )
-            },
-            cls:"messageCls",
-            field:"message",
-            formatter:function(value,rowData) {
-                var  $self = this;
-                return $("<label/>",{
-                    "class":"table-right-checkbox"
-                }).append(
-                    [$("<input/>",{
-                        "type":"checkbox",
-                        "checked":value,
-                        "click":function(event){
-                            rowData.message=!value;
-                            $self.table("refresh");
+                        )
+                }
+            }, {
+                title: "单位",
+                field: "employer"
+            }, {
+                title: "时间",
+                columns: [{
+                    title: function (field) {
+                        return [
+                            document.createTextNode("计划开始时间"),
+                            $("<span/>", {
+                                "class": function () {
+                                    var cls = "glyphicon ";
+                                    cls += plannedStartTimeOrder === "desc" ? "glyphicon-triangle-top" : "glyphicon-triangle-bottom";
+                                    return cls;
+                                },
+                                click: function () {
+                                    console.log("字段是:" + field);
+                                    /*这里可以请求ajax然后使用返回的数据渲染表格,这里setTimeout是模拟ajax异步*/
+                                    setTimeout(function () {
+                                        plannedStartTimeOrder = plannedStartTimeOrder === "desc" ? "asc" : "desc";
+                                        $("#table").table("setDatas", datas);
+                                    }, 100);
+                                }
+                            })
+                        ];
+                    },
+                    field: "plannedStartTime",
+                    formatter: function (value, rowData, rowIndex) {
+                        if (!value) {
+                            return "- -"
                         }
-                    }),$("<span/>",{
-                        "class":"table-checkbox-container"
-                    })]
-                )
-            }
-        },{
-            title:"单位",
-            field:"employer"
-        },{
-            title:function(field){
-                return [
-                    document.createTextNode("计划开始时间"),
-                    $("<span/>",{
-                        "class":function(){
-                            var cls="glyphicon ";
-                            cls+=plannedStartTimeOrder==="desc"?"glyphicon-triangle-top":"glyphicon-triangle-bottom";
-                            return cls;
-                        },
-                        click:function(){
-                            console.log("字段是:"+field);
-                            /*这里可以请求ajax然后使用返回的数据渲染表格,这里setTimeout是模拟ajax异步*/
-                            setTimeout(function(){
-                                plannedStartTimeOrder=plannedStartTimeOrder==="desc"?"asc":"desc";
-                                $("#table").table("setDatas",datas);
-                            },100);
+                        var date = new Date(value);
+                        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+                    }
+                }, {
+                    title: "实际开始时间",
+                    field: "startTime",
+                    formatter: function (value, rowData, rowIndex) {
+                        if (!value) {
+                            return "- -"
+                        }
+                        var date = new Date(value);
+                        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+                    }
+                }]
+            }, {
+                title: "分析结果",
+                field: "analysisResult",
+                cls: "analysis",
+                formatter: function (value, rowData, rowIndex, field) {
+                    var $self = this;
+                    return [
+                        $("<label/>", {
+                            "class": "radio-inline"
+                        }).append(
+                            $("<input/>", {
+                                "type": "radio",
+                                "name": field + rowIndex,
+                                "value": 1,
+                                "checked": function () {
+                                    return rowData.analysisResult == this.value;
+                                },
+                                "click": function (event) {
+                                    rowData.analysisResult = this.value;
+                                    $self.table("refresh");
+                                }
+                            }),
+                            document.createTextNode("已消控")
+                            ),
+                        $("<label/>", {
+                            "class": "radio-inline"
+                        }).append(
+                            $("<input/>", {
+                                "type": "radio",
+                                "name": field + rowIndex,
+                                "value": 2,
+                                "checked": function () {
+                                    return rowData.analysisResult == this.value;
+                                },
+                                "click": function (event) {
+                                    rowData.analysisResult = this.value;
+                                    $self.table("refresh");
+                                }
+                            }),
+                            document.createTextNode("未消控")
+                            ),
+                        $("<label/>", {
+                            "class": "radio-inline"
+                        }).append(
+                            $("<input/>", {
+                                "type": "radio",
+                                "name": field + rowIndex,
+                                "value": 3,
+                                "checked": function () {
+                                    return rowData.analysisResult == this.value;
+                                },
+                                "click": function (event) {
+                                    rowData.analysisResult = this.value;
+                                    $self.table("refresh");
+                                }
+                            }),
+                            document.createTextNode("不存在")
+                            )
+                    ]
+                }
+            }, {
+                title: "结果",
+                columns: [{
+                    title: "状态",
+                    columns: [{
+                        title: "执行状态",
+                        field: "status",
+                        formatter: function (value, rowData, rowIndex) {
+                            switch (+value) {
+                                case -1: return "暂停执行";
+                                case 0: return "未执行";
+                                case 1: return "正在执行";
+                                case 2: return "任务完成";
+                            }
+                            return "未知"
+                        }
+                    }, {
+                        title: "执行结果",
+                        field: "result",
+                        formatter: function (value, rowData, rowIndex) {
+                            if (!value || value == "0") {
+                                return "- -";
+                            }
+                            return [
+                                $("<a/>", {
+                                    "class": "btn btn-warning btn-xs",
+                                    "click": function () {
+                                        console.log(rowData);
+                                    }
+                                }).append(
+                                    $("<span/>", {
+                                        "class": "glyphicon glyphicon-save"
+                                    }),
+                                    document.createTextNode("下载")
+                                    ),
+                                $("<a/>", {
+                                    "class": "btn btn-success btn-xs"
+                                }).append(
+                                    $("<span/>", {
+                                        "class": "glyphicon glyphicon-eye-open"
+                                    }),
+                                    document.createTextNode("查看")
+                                    )
+                            ]
+                        }
+                    }]
+                }, {
+                    title: "备注",
+                    field: "id",
+                    formatter: function (value, rowData, rowIndex) {
+                        var $self = this;
+                        return $("<input/>", {
+                            "class": "demo-input",
+                            val: rowData.batchno,
+                            "keyup": function (event) {
+                                if (event.keyCode == 13) {
+                                    rowData.batchno = this.value;
+                                    $self.table("refresh");
+                                }
+                            }
+                        })
+                    }
+                }]
+            }, {
+                title: "展开详情",
+                field: "id",
+                formatter: function (value, rowData, rowIndex) {
+                    var _self = this;
+                    return $("<a/>", {
+                        "class": "btn btn-warning btn-xs",
+                        "text": "展开",
+                        "click": function () {
+                            _self.table("toggleExpand", value);
                         }
                     })
-                ];
-            },
-            field:"plannedStartTime",
-            formatter:function(value,rowData,rowIndex){
-                if(!value){
-                    return "- -"
                 }
-                var date=new Date(value);
-                return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
-            }
-        },{
-            title:"实际开始时间",
-            field:"startTime",
-            formatter:function(value,rowData,rowIndex){
-                if(!value){
-                    return "- -"
-                }
-                var date=new Date(value);
-                return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
-            }
-        }/*,{
-            title:"实际结束时间",
-            field:"endTime",
-            formatter:function(value,rowData,rowIndex){
-                if(!value){
-                    return "- -"
-                }
-                var date=new Date(value);
-                return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
-            }
-        }*/,{
-            title:"分析结果",
-            field:"analysisResult",
-            cls:"analysis",
-            formatter:function(value,rowData,rowIndex,field){
-                var $self=this;
-                return [
-                    $("<label/>",{
-                        "class":"radio-inline"
-                    }).append(
-                        $("<input/>",{
-                            "type":"radio",
-                            "name":field+rowIndex,
-                            "value":1,
-                            "checked":function(){
-                                return rowData.analysisResult == this.value;
-                            },
-                            "click":function(event){
-                                rowData.analysisResult=this.value;
-                                $self.table("refresh");
-                            }
-                        }),
-                        document.createTextNode("已消控")
-                    ),
-                    $("<label/>",{
-                        "class":"radio-inline"
-                    }).append(
-                        $("<input/>",{
-                            "type":"radio",
-                            "name":field+rowIndex,
-                            "value":2,
-                            "checked":function(){
-                                return rowData.analysisResult == this.value;
-                            },
-                            "click":function(event){
-                                rowData.analysisResult=this.value;
-                                $self.table("refresh");
-                            }
-                        }),
-                        document.createTextNode("未消控")
-                    ),
-                    $("<label/>",{
-                        "class":"radio-inline"
-                    }).append(
-                        $("<input/>",{
-                            "type":"radio",
-                            "name":field+rowIndex,
-                            "value":3,
-                            "checked":function(){
-                                return rowData.analysisResult == this.value;
-                            },
-                            "click":function(event){
-                                rowData.analysisResult=this.value;
-                                $self.table("refresh");
-                            }
-                        }),
-                        document.createTextNode("不存在")
-                    )
-                ]
-            }
-        },{
-            title:"执行状态",
-            field:"status",
-            formatter:function(value,rowData,rowIndex){
-                switch (+value){
-                    case -1:return "暂停执行";
-                    case 0:return "未执行";
-                    case 1:return "正在执行";
-                    case 2:return "任务完成";
-                }
-                return "未知"
-            }
-        },{
-            title:"执行结果",
-            field:"result",
-            formatter:function(value,rowData,rowIndex){
-                if(!value||value=="0"){
-                    return "- -";
-                }
-                return [
-                    $("<a/>",{
-                        "class":"btn btn-warning btn-xs",
-                        "click":function(){
-                            console.log(rowData);
-                        }
-                    }).append(
-                        $("<span/>",{
-                            "class":"glyphicon glyphicon-save"
-                        }),
-                        document.createTextNode("下载")
-                    ),
-                    $("<a/>",{
-                        "class":"btn btn-success btn-xs"
-                    }).append(
-                        $("<span/>",{
-                            "class":"glyphicon glyphicon-eye-open"
-                        }),
-                        document.createTextNode("查看")
-                    )
-                ]
-            }
-        },{
-            title:"备注",
-            field:"id",
-            formatter:function(value,rowData,rowIndex){
-                var $self=this;
-                return $("<input/>",{
-                    val:rowData.batchno,
-                    "keyup":function(event){
-                        if(event.keyCode==13){
-                            rowData.batchno=this.value;
-                            $self.table("refresh");
-                        }
-                    }
-                })
-            }
-        },{
-            title:"展开详情",
-            field:"id",
-            formatter:function(value,rowData,rowIndex){
-                var _self=this;
-                return $("<a/>",{
-                    "class":"btn btn-warning btn-xs",
-                    "text":"展开",
-                    "click":function(){
-                        _self.table("toggleExpand",value);
-                    }
-                })
-            }
-        },{
-            field:"id",
-            type:"expand",
-            formatter:function(value,rowData,rowIndex){
-                return $("<div/>",{
-                    "class":"expand-content",
-                    "html":JSON.stringify(rowData)
-                })
-            }
-        }],
-        footer:function(datas,columnLength){
-            return [
-                    $("<td/>",{
-                        text:"总计"
-                    }),
-                    $("<td/>",{
-                        "colspan":columnLength-2
-                    }),
-                    $("<td/>",{
-                        text:datas.length+"条数据"
+            }, {
+                field: "id",
+                type: "expand",
+                formatter: function (value, rowData, rowIndex) {
+                    return $("<div/>", {
+                        "class": "expand-content",
+                        "html": JSON.stringify(rowData)
                     })
-            ]
-        }
-    }).table("check",["000001"]).table("disableToggleChecked",["000001","000002"]);
-    $("#getChecked").on("click",function(){
-        console.log($("#table").table("getChecked"));
-    });
-    $("#getCheckedIDs").on("click",function(){
-        console.log($("#table").table("getCheckedIDs"));
-    });
-    $("#getSelected").on("click",function(){
-        console.log($("#table").table("getSelected"));
-    });
-    $("#getSelectedIDs").on("click",function(){
-        console.log($("#table").table("getSelectedIDs"));
-    });
-    $("#render").on("click",function(){
-        datas.shift();//这句话把000001的数据删除掉了
-        datas.push({
-            id:new Date().getTime(),
-            taskno:"201611006",
-            batchno:"006",
-            employer:"山东电力公司",
-            plannedStartTime:new Date().toLocaleDateString(),
-            startTime:new Date().toLocaleDateString(),
-            endTime:new Date().toLocaleDateString(),
-            status:"-1",
-            result:"1"
+                }
+            }],
+            footer: function (datas, columnLength) {
+                return [
+                    $("<td/>", {
+                        text: "总计"
+                    }),
+                    $("<td/>", {
+                        "colspan": columnLength - 2
+                    }),
+                    $("<td/>", {
+                        text: datas.length + "条数据"
+                    })
+                ]
+            }
+        }).table("check", ["000001"]).table("disableToggleChecked", ["000001", "000002"]);
+        $("#getChecked").on("click", function () {
+            console.log($("#table").table("getChecked"));
         });
-        $("#table").table("setDatas",datas);
-        $("#table").table("check",["000005","000006"]);
-    })
-</script>
+        $("#getCheckedIDs").on("click", function () {
+            console.log($("#table").table("getCheckedIDs"));
+        });
+        $("#getSelected").on("click", function () {
+            console.log($("#table").table("getSelected"));
+        });
+        $("#getSelectedIDs").on("click", function () {
+            console.log($("#table").table("getSelectedIDs"));
+        });
+        $("#render").on("click", function () {
+            datas.shift();//这句话把000001的数据删除掉了
+            datas.push({
+                id: new Date().getTime(),
+                taskno: "201611006",
+                batchno: "006",
+                employer: "山东电力公司",
+                plannedStartTime: new Date().toLocaleDateString(),
+                startTime: new Date().toLocaleDateString(),
+                endTime: new Date().toLocaleDateString(),
+                status: "-1",
+                result: "1"
+            });
+            $("#table").table("setDatas", datas);
+            $("#table").table("check", ["000005", "000006"]);
+        })
+    </script>
 </body>
+
 </html>
