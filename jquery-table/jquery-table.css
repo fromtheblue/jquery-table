@@ -1,39 +1,49 @@
-.table{
+.table {
     text-align: center;
     table-layout: fixed;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
 }
-.table-thead{
-    background-color: #0d90e2;
+
+.table-thead {
+    background-color: #088e8d;
     color: white;
 }
-.table th,.table td{
+
+.table th, .table td {
+    word-wrap: break-word;
     text-align: inherit;
 }
-.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
-    border-width: 1px;
+
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+    border: 0;
     vertical-align: middle;
 }
-.table-no{
+
+.table-no {
     width: 4em;
 }
-.table-checkbox{
+
+.table-checkbox {
     width: 5em;
 }
 .table-head-radio{
     width:4em;
 }
-.table .selected{
-    background-color: #e5e6e8!important;
+.table .selected {
+    background-color: #e5e6e8 !important;
 }
-.expandCls{
-    text-align: left;
-    vertical-align: initial;
+
+.noRowMsg {
+
 }
+
 /*table中的复选框*/
-.table label{
+.table label {
     margin: 0;
 }
-.table-right-checkbox{
+
+.table-right-checkbox {
     width: 1em;
     height: 1em;
     display: inline-block;
@@ -45,17 +55,20 @@
     -ms-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+    position: relative;
 }
-.table-right-checkbox.disabled{
+.table-right-checkbox.disabled {
     cursor: not-allowed;
 }
-.table-right-checkbox>input{
+
+.table-right-checkbox > input {
     position: absolute;
     margin: 0;
     opacity: 0;
     vertical-align: bottom;
 }
-.table-right-checkbox>input+.table-checkbox-container{
+
+.table-right-checkbox > input + .table-checkbox-container {
     display: inline-block;
     width: inherit;
     height: inherit;
@@ -65,17 +78,17 @@
     border-radius: 4px;
     background-color: white;
 }
-.table-right-checkbox>input:disabled+.table-checkbox-container{
-    border-color: rgb(220,220,220);
+.table-right-checkbox > input:disabled + .table-checkbox-container {
+    border-color: rgba(220,220,220,.5);
 }
-.table-right-checkbox>input:checked+.table-checkbox-container{
+.table-right-checkbox > input:checked + .table-checkbox-container {
     color: #0d84d4;
     border: 1px solid currentColor;
 }
-.table-right-checkbox>input:checked:disabled+.table-checkbox-container{
-    color: rgb(220,220,220);
+.table-right-checkbox > input:checked:disabled + .table-checkbox-container {
+    color:rgba(220,220,220,.5);
 }
-.table-right-checkbox>input+.table-checkbox-container::before{
+.table-right-checkbox > input + .table-checkbox-container::before {
     content: "\2713";
     line-height: 1;
     vertical-align: top;
@@ -86,29 +99,29 @@
     position: relative;
     visibility: hidden;
 }
-.table-right-checkbox>input:checked+.table-checkbox-container::before{
-    visibility:visible;
+
+.table-right-checkbox > input:checked + .table-checkbox-container::before {
+    visibility: visible;
 }
-.table-right-checkbox::after{
-    content:"c";
+
+.table-right-checkbox::after {
+    content: "c";
     opacity: 0;
     display: inline-block;
 }
+
 /*!table中的复选框*/
 /*table中的单选框*/
-.table-radio{
+/* .table-radio{
     color: #0d84d4;
-    width: 1em;
-    height: 1em;
+    width: calc(1em - 4px);
+    height: calc(1em - 4px);
     padding: 2px;
     border: 1px solid;
     display: inline-block;
     border-radius: 50%;
     box-sizing: content-box;
     vertical-align: middle;
-}
-.table-radio.disabled{
-    color: rgb(200,200,200);
 }
 .table-radio>input{
     position: absolute;
@@ -131,5 +144,5 @@
 .table-radio::after{
     content:"r";
     opacity: 0;
-}
+} */
 /*!table中的单选框*/
