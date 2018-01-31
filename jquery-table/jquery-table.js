@@ -154,13 +154,13 @@
         });
         return this;
     }
-    function setDatas(datas) {
+    /*function setDatas(datas) {
         var $self = this,
             params = this.data('table'),
             id = params.id,
             _datas = params._datas;
         params.datas = datas;
-        /*set数据的时候可以显示无数据的消息*/
+        /!*set数据的时候可以显示无数据的消息*!/
         params._showNoRowMsg = true;
         _datas.reduceRight(function (privous, _data, idx) {
             if (datas.every(function (data) {
@@ -176,6 +176,32 @@
                 _datas.push({ data: data });
             }
         })
+    }*/
+    function setDatas(datas){
+        var $self=this,
+            params=this.data('table'),
+            id=params.id,
+            _datas=params._datas,
+            _newDatas,
+            datas=datas||[];
+        params.datas=datas,
+            /*set数据的时候可以显示无数据的消息*/
+            params._showNoRowMsg=true;
+        if(datas){
+            _newDatas=datas.map(function(data){
+                var _newData={};
+                _datas.forEach(function(_data){
+                    if(_data.data[id]===data[id]){
+                        _newData=_data;
+                    }
+                });
+                _newData.data=data;
+                return _newData;
+            });
+            params._datas=_newDatas;
+        }else{
+            params._datas=datas;
+        }
     }
     function check(ids) {
         var $self = this,
