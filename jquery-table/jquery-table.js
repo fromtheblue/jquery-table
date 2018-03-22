@@ -46,6 +46,7 @@
  *                    rowData 填充当前行的原始数据
  *                    idx 当前行所在的行数
  *                    field 字段名
+ *                    row 当前数据所在的行(tr)的jquery对象
  *            columns 子表头，子表头可以无限嵌套，当使用子表头以后，上层表头的的field字段将失去作用  
  *     footer:function(datas,columnLength)
  *            生成表格底部的格式化函数,返回值将作为表格的tfoot下面的tr下面的内容
@@ -601,7 +602,8 @@
                                     _render.call($self);
                                 }
                             }
-                        }).toggleClass("selected", !!_data.selected).append(
+                        }).toggleClass("selected", !!_data.selected);
+                        row.append(
                             function () {
                                 if (params.showNo) {
                                     return $("<td/>").append(
@@ -679,7 +681,7 @@
                                     html: function () {
                                         var formatter = _column.formatter;
                                         if (formatter) {
-                                            return formatter.call($self, data[_column.field], data, idx, _column.field);
+                                            return formatter.call($self, data[_column.field], data, idx, _column.field,row);
                                         }
                                         return safeStr(data[_column.field])||"";
                                     },
