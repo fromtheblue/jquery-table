@@ -178,30 +178,30 @@
             }
         })
     }*/
-    function setDatas(datas){
-        var $self=this,
-            params=this.data('table'),
-            id=params.id,
-            _datas=params._datas,
+    function setDatas(datas) {
+        var $self = this,
+            params = this.data('table'),
+            id = params.id,
+            _datas = params._datas,
             _newDatas,
-            datas=datas||[];
-        params.datas=datas,
+            datas = datas || [];
+        params.datas = datas,
             /*set数据的时候可以显示无数据的消息*/
-            params._showNoRowMsg=true;
-        if(datas){
-            _newDatas=datas.map(function(data){
-                var _newData={};
-                _datas.forEach(function(_data){
-                    if(_data.data[id]===data[id]){
-                        _newData=_data;
+            params._showNoRowMsg = true;
+        if (datas) {
+            _newDatas = datas.map(function (data) {
+                var _newData = {};
+                _datas.forEach(function (_data) {
+                    if (_data.data[id] === data[id]) {
+                        _newData = _data;
                     }
                 });
-                _newData.data=data;
+                _newData.data = data;
                 return _newData;
             });
-            params._datas=_newDatas;
-        }else{
-            params._datas=datas;
+            params._datas = _newDatas;
+        } else {
+            params._datas = datas;
         }
     }
     function check(ids) {
@@ -433,106 +433,114 @@
         }, 0);
     }
     /*防止xss攻击，进行字符转换*/
-    function safeStr(str){
-        if(typeof str !== 'string') return str;
-        if(!str) return '';
-        return str.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    function safeStr(str) {
+        if (typeof str !== 'string') return str;
+        if (!str) return '';
+        return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
     /*反向转译字符*/
-    function unSafeStr(str){
-        if(typeof str !== 'string') return str;
-        if(!str) return '';
-        return str.replace(/&lt;/g,'\<').replace(/&gt;/g,'\>').replace(/&quot;/g, '\"').replace(/&#039;/g, "\'");
+    function unSafeStr(str) {
+        if (typeof str !== 'string') return str;
+        if (!str) return '';
+        return str.replace(/&lt;/g, '\<').replace(/&gt;/g, '\>').replace(/&quot;/g, '\"').replace(/&#039;/g, "\'");
     }
-    function _render() {
+    function thead() {
         var $self = this;
         var params = $self.data("table");
         var onChecked = params.onChecked;
         var onUnchecked = params.onUnchecked;
-        var _expandColumn;
-        var expandCls = params.expandCls;
-        var footer = params.footer;
-        var datas = params.datas;
-        var _columns = _getColumns(params.columns);
         var headers = _getHeader(params.columns);
-        var columnLength = _getColumnLength(params.columns) + (params.showNo ? 1 : 0) + (params.showCheckbox ? 1 : 0);
-        params.columns.forEach(function (column) {
-            if (column.type === "expand") {
-                _expandColumn = column;
-            }
-        });
-        this.addClass(params.cls).html([
-            $("<thead/>", {
-                "class": params.headCls
-            }).append(
-                function () {
-                    return [$("<tr/>").append(
-                        function () {
-                            if (params.showNo) {
-                                return $("<th/>", {
-                                    "class": "table-no",
-                                    "rowspan": headers.deep
-                                }).append(
-                                    document.createTextNode("序号")
-                                    )
-                            }
-                        }(),
-                        function () {
-                            if (params.showRadio) {
-                                return $("<th/>", {
-                                    "class": "table-head-radio",
-                                    "rowspan": headers.deep
-                                }).append(
-                                    document.createTextNode("选择")
-                                    )
-                            } else if (params.showCheckbox) {
-                                return $("<th/>", {
-                                    "class": "table-checkbox",
-                                    "rowspan": headers.deep
-                                }).append(
-                                    $("<label/>").append(
-                                        $("<label/>", {
-                                            "class": "table-right-checkbox"
-                                        }).append(
-                                            function () {
-                                                var checkbox = document.createElement("input");
-                                                checkbox.type = "checkbox";
-                                                if (params._datas) {
-                                                    if (params._datas.length || params._showNoRowMsg) {
-                                                        checkbox.checked = params._datas.filter(function (_data) {
-                                                            /* 排除掉不可修改状态的数据 */
-                                                            return !_data.disableToggleChecked;
-                                                        }).every(function (_data) {
-                                                            return _data.checked;
-                                                        });
-                                                    }
-                                                }
-                                                checkbox.addEventListener("change", function () {
-                                                    params._datas.forEach(function (_data) {
-                                                        /* 如果该数据是不可修改选中状态，那么保持不变 */
-                                                        if (_data.disableToggleChecked) {
-                                                            return;
-                                                        }
-                                                        _data.checked = checkbox.checked;
-                                                        /* 触发被选中事件或被取消选中事件 */
-                                                        checkbox.checked ? onChecked(_data.data) : onUnchecked(_data.data);
+        return $("<thead/>", {
+            "class": params.headCls
+        }).append(
+            function () {
+                return [$("<tr/>").append(
+                    function () {
+                        if (params.showNo) {
+                            return $("<th/>", {
+                                "class": "table-no",
+                                "rowspan": headers.deep
+                            }).append(
+                                document.createTextNode("序号")
+                            )
+                        }
+                    }(),
+                    function () {
+                        if (params.showRadio) {
+                            return $("<th/>", {
+                                "class": "table-head-radio",
+                                "rowspan": headers.deep
+                            }).append(
+                                document.createTextNode("选择")
+                            )
+                        } else if (params.showCheckbox) {
+                            return $("<th/>", {
+                                "class": "table-checkbox",
+                                "rowspan": headers.deep
+                            }).append(
+                                $("<label/>").append(
+                                    $("<label/>", {
+                                        "class": "table-right-checkbox"
+                                    }).append(
+                                        function () {
+                                            var checkbox = document.createElement("input");
+                                            checkbox.type = "checkbox";
+                                            if (params._datas) {
+                                                if (params._datas.length || params._showNoRowMsg) {
+                                                    checkbox.checked = params._datas.filter(function (_data) {
+                                                        /* 排除掉不可修改状态的数据 */
+                                                        return !_data.disableToggleChecked;
+                                                    }).every(function (_data) {
+                                                        return _data.checked;
                                                     });
-                                                    _render.call($self);
+                                                }
+                                            }
+                                            checkbox.addEventListener("change", function () {
+                                                params._datas.forEach(function (_data) {
+                                                    /* 如果该数据是不可修改选中状态，那么保持不变 */
+                                                    if (_data.disableToggleChecked) {
+                                                        return;
+                                                    }
+                                                    _data.checked = checkbox.checked;
+                                                    /* 触发被选中事件或被取消选中事件 */
+                                                    checkbox.checked ? onChecked(_data.data) : onUnchecked(_data.data);
                                                 });
-                                                return [
-                                                    checkbox,
-                                                    $("<span/>", {
-                                                        "class": "table-checkbox-container"
-                                                    })
-                                                ]
-                                            }()
-                                            ),
-                                        document.createTextNode(" 选择")
-                                    )
-                                    )
+                                                _render.call($self);
+                                            });
+                                            return [
+                                                checkbox,
+                                                $("<span/>", {
+                                                    "class": "table-checkbox-container"
+                                                })
+                                            ]
+                                        }()
+                                    ),
+                                    document.createTextNode(" 选择")
+                                )
+                            )
+                        }
+                    }(),
+                    headers[0].map(function (column) {
+                        return $("<th/>", {
+                            "class": column.cls || "",
+                            "rowspan": column._rowspan,
+                            "colspan": column._colspan
+                        }).append(
+                            function () {
+                                if (typeof column.title === "function") {
+                                    return column.title.call($self, column.field, column);
+                                }
+                                return document.createTextNode(column.title)
                             }
-                        }(),
-                        headers[0].map(function (column) {
+                        )
+                    })
+                )]
+            }()
+        ).append(
+            function () {
+                return headers.slice(1).map(function (columns) {
+                    return $("<tr/>").append(
+                        columns.map(function (column) {
                             return $("<th/>", {
                                 "class": column.cls || "",
                                 "rowspan": column._rowspan,
@@ -544,196 +552,223 @@
                                     }
                                     return document.createTextNode(column.title)
                                 }
-                                )
+                            )
                         })
-                    )]
-                }()
-                ).append(
-                function () {
-                    return headers.slice(1).map(function (columns) {
-                        return $("<tr/>").append(
-                            columns.map(function (column) {
-                                return $("<th/>", {
-                                    "class": column.cls || "",
-                                    "rowspan": column._rowspan,
-                                    "colspan": column._colspan
-                                }).append(
-                                    function () {
-                                        if (typeof column.title === "function") {
-                                            return column.title.call($self, column.field, column);
-                                        }
-                                        return document.createTextNode(column.title)
-                                    }
-                                    )
-                            })
-                        )
-                    })
-                }()
-                ),
-            $("<tbody/>").append(
-                function () {
-                    if ((!params._datas || !params._datas.length) && params._showNoRowMsg) {
-                        return $("<tr/>").append(
-                            $("<td/>", {
-                                "colspan": function () {
-                                    return params.columns.length + params.showNo + params.showCheckbox + params.showRadio;
-                                }
-                            }).append(
-                                params.noRowMsg(params._datas)
-                                )
-                        )
-                    }
-                    return params._datas.reduce(function (_target, _data, idx) {
-                        var data = _data.data;
-                        var row = $("<tr/>", {
-                            "click": function (event) {
-                                var selected;
-                                if (params.select) {
-                                    if ($(event.target).closest(".table-right-checkbox").length) {
-                                        _data.checked = !_data.checked;
-                                    }
-                                    selected = !!_data.selected;
-                                    if (params.singleSelect) {
-                                        params._datas.forEach(function (_data) {
-                                            _data.selected = false;
-                                        });
-                                    }
-                                    _data.selected = !selected;
-                                    _render.call($self);
-                                }
-                            }
-                        }).toggleClass("selected", !!_data.selected);
-                        row.append(
-                            function () {
-                                if (params.showNo) {
-                                    return $("<td/>").append(
-                                        document.createTextNode(params.number(idx))
-                                    )
-                                }
-                            }(),
-                            function () {
-                                if (params.showRadio) {
-                                    return $("<td/>").append(
-                                        $("<label/>", {
-                                            "class": function () {
-                                                var cls = "table-radio";
-                                                if (_data.disableToggleChecked) {
-                                                    cls += " disabled"
-                                                }
-                                                return cls;
-                                            }
-                                        }).append(
-                                            function(){
-                                                var radio=document.createElement("input");
-                                                radio.type="radio";
-                                                radio.checked=!!_data.checked;
-                                                /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
-                                                radio.disabled=_data.disableToggleChecked;
-                                                radio.addEventListener("change",function(){
-                                                    params._datas.forEach(function(item){
-                                                        item.checked=false;
-                                                    })
-                                                    _data.checked=this.checked;
-                                                    /* 触发被选中事件或被取消选中事件 */
-                                                    this.checked?onChecked(_data.data):onUnchecked(_data.data);
-                                                    _render.call($self);
-                                                });
-                                                return radio;
-                                            }()
-                                            )
-                                    )
-                                }else if (params.showCheckbox) {
-                                    return $("<td/>").append(
-                                        $("<label/>", {
-                                            "class": function () {
-                                                var cls = "table-right-checkbox";
-                                                if (_data.disableToggleChecked) {
-                                                    cls += " disabled";
-                                                }
-                                                return cls;
-                                            }
-                                        }).append(
-                                            function () {
-                                                var checkbox = document.createElement("input");
-                                                checkbox.type = "checkbox";
-                                                checkbox.checked = !!_data.checked;
-                                                /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
-                                                checkbox.disabled = _data.disableToggleChecked;
-                                                checkbox.addEventListener("change", function () {
-                                                    _data.checked = this.checked;
-                                                    /* 触发被选中事件或被取消选中事件 */
-                                                    this.checked ? onChecked(_data.data) : onUnchecked(_data.data);
-                                                    _render.call($self);
-                                                });
-                                                return [
-                                                    checkbox,
-                                                    $("<span/>", {
-                                                        "class": "table-checkbox-container"
-                                                    })
-                                                ]
-                                            }()
-                                            )
-                                    )
-                                }
-                            }(),
-                            _columns.map(function (_column) {
-                                return $("<td/>", {
-                                    html: function () {
-                                        var formatter = _column.formatter;
-                                        if (formatter) {
-                                            return formatter.call($self, data[_column.field], data, idx, _column.field,row);
-                                        }
-                                        return safeStr(data[_column.field])||"";
-                                    },
-                                    "class":_column.cellCls||"",
-                                    title:function(){
-                                        if(_column.cellTitle!==false){
-                                            return unSafeStr(this.innerHTML);
-                                        }else{
-                                            return "";
-                                        }
-                                    }
-                                })
-                            })
-                            );
-                        row.on(Object.keys(params.rowEvents).reduce(function (target, key) {
-                            target[key] = params.rowEvents[key].bind(row, data, idx);
-                            return target;
-                        }, {}));
-                        _target.push(row);
-                        if (_expandColumn) {
-                            _target.push($("<tr/>", {
-                                "class": function () {
-                                    return expandCls + (_data.expand ? "" : " hidden");
-                                }
-                            }).append(
-                                $("<td/>", {
-                                    "colspan": columnLength,
-                                    html: function () {
-                                        var field = _expandColumn.field;
-                                        var formatter = _expandColumn.formatter;
-                                        if (formatter) {
-                                            return formatter.call($self, data[field], data, idx, field);
-                                        }
-                                        return data[field];
-                                    }
-                                })
-                                ), $("<tr/>", {
-                                    "class": "hidden"
-                                }));
-                        }
-                        return _target;
-                    }, [])
-                }()
-            ),
+                    )
+                })
+            }()
+        )
+    }
+    function tbody(){
+        var $self = this;
+        var params = $self.data("table");
+        var onChecked = params.onChecked;
+        var onUnchecked = params.onUnchecked;
+        var _expandColumn;
+        var expandCls = params.expandCls;
+        var footer = params.footer;
+        var datas = params.datas;
+        var _columns = _getColumns(params.columns);
+        var columnLength = _getColumnLength(params.columns) + (params.showNo ? 1 : 0) + (params.showCheckbox ? 1 : 0);
+        return [$("<tbody/>").append(
             function () {
-                var footContent = footer.call($self, datas, columnLength);
-                if (footContent) {
-                    return $("<tfoot/>").append(
-                        $("<tr/>").append(footContent)
+                if ((!params._datas || !params._datas.length) && params._showNoRowMsg) {
+                    return $("<tr/>").append(
+                        $("<td/>", {
+                            "colspan": function () {
+                                return params.columns.length + params.showNo + params.showCheckbox + params.showRadio;
+                            }
+                        }).append(
+                            params.noRowMsg(params._datas)
+                        )
                     )
                 }
+                return params._datas.reduce(function (_target, _data, idx) {
+                    var data = _data.data;
+                    var row = $("<tr/>", {
+                        "click": function (event) {
+                            var selected;
+                            if (params.select) {
+                                if ($(event.target).closest(".table-right-checkbox").length) {
+                                    _data.checked = !_data.checked;
+                                }
+                                selected = !!_data.selected;
+                                if (params.singleSelect) {
+                                    params._datas.forEach(function (_data) {
+                                        _data.selected = false;
+                                    });
+                                }
+                                _data.selected = !selected;
+                                _render.call($self);
+                            }
+                        }
+                    }).toggleClass("selected", !!_data.selected);
+                    row.append(
+                        function () {
+                            if (params.showNo) {
+                                return $("<td/>").append(
+                                    document.createTextNode(params.number(idx))
+                                )
+                            }
+                        }(),
+                        function () {
+                            if (params.showRadio) {
+                                return $("<td/>").append(
+                                    $("<label/>", {
+                                        "class": function () {
+                                            var cls = "table-radio";
+                                            if (_data.disableToggleChecked) {
+                                                cls += " disabled"
+                                            }
+                                            return cls;
+                                        }
+                                    }).append(
+                                        function () {
+                                            var radio = document.createElement("input");
+                                            radio.type = "radio";
+                                            radio.checked = !!_data.checked;
+                                            /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
+                                            radio.disabled = _data.disableToggleChecked;
+                                            radio.addEventListener("change", function () {
+                                                params._datas.forEach(function (item) {
+                                                    item.checked = false;
+                                                })
+                                                _data.checked = this.checked;
+                                                /* 触发被选中事件或被取消选中事件 */
+                                                this.checked ? onChecked(_data.data) : onUnchecked(_data.data);
+                                                _render.call($self);
+                                            });
+                                            return radio;
+                                        }()
+                                    )
+                                )
+                            } else if (params.showCheckbox) {
+                                return $("<td/>").append(
+                                    $("<label/>", {
+                                        "class": function () {
+                                            var cls = "table-right-checkbox";
+                                            if (_data.disableToggleChecked) {
+                                                cls += " disabled";
+                                            }
+                                            return cls;
+                                        }
+                                    }).append(
+                                        function () {
+                                            var checkbox = document.createElement("input");
+                                            checkbox.type = "checkbox";
+                                            checkbox.checked = !!_data.checked;
+                                            /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
+                                            checkbox.disabled = _data.disableToggleChecked;
+                                            checkbox.addEventListener("change", function () {
+                                                _data.checked = this.checked;
+                                                /* 触发被选中事件或被取消选中事件 */
+                                                this.checked ? onChecked(_data.data) : onUnchecked(_data.data);
+                                                _render.call($self);
+                                            });
+                                            return [
+                                                checkbox,
+                                                $("<span/>", {
+                                                    "class": "table-checkbox-container"
+                                                })
+                                            ]
+                                        }()
+                                    )
+                                )
+                            }
+                        }(),
+                        _columns.map(function (_column) {
+                            return $("<td/>", {
+                                html: function () {
+                                    var formatter = _column.formatter;
+                                    if (formatter) {
+                                        return formatter.call($self, data[_column.field], data, idx, _column.field, row);
+                                    }
+                                    return safeStr(data[_column.field]) || "";
+                                },
+                                "class": _column.cellCls || "",
+                                title: function () {
+                                    if (_column.cellTitle !== false) {
+                                        return unSafeStr(this.innerHTML);
+                                    } else {
+                                        return "";
+                                    }
+                                }
+                            })
+                        })
+                    );
+                    row.on(Object.keys(params.rowEvents).reduce(function (target, key) {
+                        target[key] = params.rowEvents[key].bind(row, data, idx);
+                        return target;
+                    }, {}));
+                    _target.push(row);
+                    if (_expandColumn) {
+                        _target.push($("<tr/>", {
+                            "class": function () {
+                                return expandCls + (_data.expand ? "" : " hidden");
+                            }
+                        }).append(
+                            $("<td/>", {
+                                "colspan": columnLength,
+                                html: function () {
+                                    var field = _expandColumn.field;
+                                    var formatter = _expandColumn.formatter;
+                                    if (formatter) {
+                                        return formatter.call($self, data[field], data, idx, field);
+                                    }
+                                    return data[field];
+                                }
+                            })
+                        ), $("<tr/>", {
+                            "class": "hidden"
+                        }));
+                    }
+                    return _target;
+                }, [])
             }()
+        ),
+        function () {
+            var footContent = footer.call($self, datas, columnLength);
+            if (footContent) {
+                return $("<tfoot/>").append(
+                    $("<tr/>").append(footContent)
+                )
+            }
+        }()]
+    }
+    function _render() {
+        var $self = this;
+        var params = $self.data("table");
+        var hideHead = thead.call($self);
+        params.columns.forEach(function (column) {
+            if (column.type === "expand") {
+                _expandColumn = column;
+            }
+        });
+        var tbodytable = $("<table/>", {
+            "class": params.cls
+        }).append(
+            hideHead
+        ).append(
+            tbody.call($self)
+        );
+        var tbodyWrap = $("<div/>",{
+            "class":"tbody-wrap"
+        }).append(
+            tbodytable
+        );
+        this.addClass("table-wrap").html([
+            $("<table/>",{
+                "class": params.cls
+            }).append(
+                thead.call($self)
+            ),
+            tbodyWrap
         ]);
+        var hideHeadHeight = window.getComputedStyle(hideHead.get(0)).height;
+        tbodytable.get(0).style.marginTop = -parseFloat(hideHeadHeight)+"px";
+        var maxHeight = window.getComputedStyle(this.get(0)).maxHeight;
+        if(maxHeight!="none"){
+            tbodyWrap.get(0).style.maxHeight = parseFloat(maxHeight) - parseFloat(hideHeadHeight)+"px";
+        }
     }
 })(jQuery);

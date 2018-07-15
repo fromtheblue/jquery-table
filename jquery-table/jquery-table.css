@@ -1,15 +1,27 @@
+.table-wrap{
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    max-height: 1000px;
+}
 .table {
     text-align: center;
     table-layout: fixed;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
 .table-thead {
     background-color: #088e8d;
     color: white;
 }
-
+.table-wrap{
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.tbody-wrap{
+    overflow-x: hidden;
+    overflow-y: auto; 
+}
 .table th, .table td {
     word-wrap: break-word;
     text-align: inherit;
