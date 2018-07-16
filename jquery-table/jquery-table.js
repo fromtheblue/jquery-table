@@ -790,7 +790,11 @@
             ),
             tbodyWrap
         ]);
-        var t = setInterval(function () {
+        var t = 9999;
+        calcSize.call(this);
+        t = setInterval(calcSize.bind(this), 17);
+
+        function calcSize() {
             var hideHeadHeight = window.getComputedStyle(hideHead.get(0)).height;
             if (hideHeadHeight == "auto") {
                 return;
@@ -802,7 +806,7 @@
             if (maxHeight != "none") {
                 tbodyWrap.get(0).style.maxHeight = parseFloat(maxHeight) - parseFloat(hideHeadHeight) + "px";
             }
-        }.bind(this), 17);
+        }
 
     }
 })(jQuery);
