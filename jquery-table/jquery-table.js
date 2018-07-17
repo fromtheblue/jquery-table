@@ -790,23 +790,31 @@
             ),
             tbodyWrap
         ]);
-        var t = 9999;
-        calcSize.call(this);
-        t = setInterval(calcSize.bind(this), 17);
-
-        function calcSize() {
-            var hideHeadHeight = window.getComputedStyle(hideHead.get(0)).height;
-            if (hideHeadHeight == "auto") {
-                return;
-            } else {
-                clearInterval(t)
-            }
-            tbodytable.get(0).style.marginTop = -parseFloat(hideHeadHeight) + "px";
-            var maxHeight = window.getComputedStyle(this.get(0)).maxHeight;
-            if (maxHeight != "none") {
-                tbodyWrap.get(0).style.maxHeight = parseFloat(maxHeight) - parseFloat(hideHeadHeight) + "px";
+        calcTBody.call(this);
+        function calcTBody(){
+            var t = 9999;
+            var hideHeadHeight;
+            calcSize.call(this);
+            t = setInterval(calcSize.bind(this), 17);
+            function calcSize() {
+                if(hideHeadHeight&&hideHeadHeight!="auto"){
+                    clearInterval(t);
+                    return;
+                }
+                var clientRect = hideHead.get(0).getClientRects()[0];
+                if(clientRect){
+                    hideHeadHeight = clientRect.height;
+                    if (hideHeadHeight != "auto") {
+                        tbodytable.get(0).style.marginTop = -hideHeadHeight + "px";
+                        var maxHeight = window.getComputedStyle(this.get(0)).maxHeight;
+                        if (maxHeight != "none") {
+                            var tbodyWrapMaxHeight = parseFloat(maxHeight) - hideHeadHeight;
+                            if(tbodyWrapMaxHeight<=0){tbodyWrapMaxHeight=0}
+                            tbodyWrap.get(0).style.maxHeight = tbodyWrapMaxHeight + "px";
+                        }
+                    }
+                }
             }
         }
-
     }
 })(jQuery);
