@@ -58,6 +58,8 @@
  *              getSelected 获取所有的被选中的数据
  *              getSelectedIDs 获取所有被选中的数据的id字符串
  *              setDatas(datas) 重新渲染数据
+ * unAllCheck(ids) 取消选中的表格数据（复选框被选中）
+ *                      ids 要取消选中的原始数据的id集合,只能是数字,字符串和数组类型
  *              check(ids) 选中表格数据（复选框被选中）
  *                      ids 要选中的原始数据的id集合,只能是数字,字符串和数组类型
  *              expand(id) 将该条数据的详情行展示出来
@@ -76,6 +78,7 @@
     }
     var setMethods = {
         "setDatas": setDatas,
+        "unAllCheck": unAllCheck,
         "check": check,
         "disableToggleChecked": disableToggleChecked,
         "expand": expand,
@@ -157,29 +160,7 @@
         });
         return this;
     }
-    /*function setDatas(datas) {
-        var $self = this,
-            params = this.data('table'),
-            id = params.id,
-            _datas = params._datas;
-        params.datas = datas;
-        /!*set数据的时候可以显示无数据的消息*!/
-        params._showNoRowMsg = true;
-        _datas.reduceRight(function (privous, _data, idx) {
-            if (datas.every(function (data) {
-                return data[id] != _data.data[id];
-            })) {
-                _datas.splice(idx, 1);
-            }
-        }, {});
-        datas.forEach(function (data) {
-            if (_datas.every(function (_data) {
-                return data[id] != _data.data[id];
-            })) {
-                _datas.push({ data: data });
-            }
-        })
-    }*/
+
     function setDatas(datas) {
         var $self = this,
             params = this.data('table'),
@@ -205,6 +186,27 @@
         } else {
             params._datas = datas;
         }
+    }
+
+    function unAllCheck(ids) {
+        var $self = this,
+            params = this.data('table'),
+            /*  onChecked = params.onChecked,
+             onUnchecked = params.onUnchecked, */
+            id = params.id,
+            _datas = params._datas;
+        if (typeof ids == "number") {
+            ids = "" + ids;
+        }
+        if (typeof ids == "string") {
+            ids = ids.split(",");
+        }
+        if (!(ids instanceof Array)) {
+            throw new Error('The params must be Array or Number or String');
+        }
+        _datas.forEach(function (_data) {
+            _data.checked = false;
+        });
     }
 
     function check(ids) {
@@ -466,6 +468,20 @@
         if (!str) return '';
         return str.replace(/&lt;/g, '\<').replace(/&gt;/g, '\>').replace(/&quot;/g, '\"').replace(/&#039;/g, "\'");
     }
+    /* title每50个字符换行显示 */
+    function addStrLine(str) {
+        return insertString(str.substr(0, 50), str.substr(50, str.length), "\n");
+    }
+
+    function insertString(startStr, endStr, insertStr) {
+        if (endStr.length > 50) {
+            endStr = insertString(endStr.substr(0, 50), endStr.substr(50, endStr.length), "\n");
+        }
+        if (startStr != null && endStr != null) {
+            return startStr + insertStr + endStr;
+        }
+        return null;
+    }
 
     function thead() {
         var $self = this;
@@ -509,7 +525,7 @@
                                             var checkbox = document.createElement("input");
                                             checkbox.type = "checkbox";
                                             if (params._datas) {
-                                                if (params._datas.length || params._showNoRowMsg) {
+                                                if (params._datas.length && params._showNoRowMsg) {
                                                     checkbox.checked = params._datas.filter(function (_data) {
                                                         /* 排除掉不可修改状态的数据 */
                                                         return !_data.disableToggleChecked;
@@ -712,7 +728,7 @@
                                     "class": _column.cellCls || "",
                                     title: function () {
                                         if (_column.cellTitle !== false) {
-                                            return unSafeStr(this.innerHTML);
+                                            return unSafeStr(addStrLine(this.innerHTML));
                                         } else {
                                             return "";
                                         }
@@ -791,25 +807,29 @@
             tbodyWrap
         ]);
         calcTBody.call(this);
-        function calcTBody(){
+
+        function calcTBody() {
             var t = 9999;
             var hideHeadHeight;
             calcSize.call(this);
             t = setInterval(calcSize.bind(this), 17);
+
             function calcSize() {
-                if(hideHeadHeight&&hideHeadHeight!="auto"){
+                if (hideHeadHeight && hideHeadHeight != "auto") {
                     clearInterval(t);
                     return;
                 }
                 var clientRect = hideHead.get(0).getClientRects()[0];
-                if(clientRect){
+                if (clientRect) {
                     hideHeadHeight = clientRect.height;
                     if (hideHeadHeight != "auto") {
                         tbodytable.get(0).style.marginTop = -hideHeadHeight + "px";
                         var maxHeight = window.getComputedStyle(this.get(0)).maxHeight;
                         if (maxHeight != "none") {
                             var tbodyWrapMaxHeight = parseFloat(maxHeight) - hideHeadHeight;
-                            if(tbodyWrapMaxHeight<=0){tbodyWrapMaxHeight=0}
+                            if (tbodyWrapMaxHeight <= 0) {
+                                tbodyWrapMaxHeight = 0
+                            }
                             tbodyWrap.get(0).style.maxHeight = tbodyWrapMaxHeight + "px";
                         }
                     }

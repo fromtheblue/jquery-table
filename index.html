@@ -43,6 +43,7 @@
     <button id="getSelected">获取被选中的数据</button>
     <button id="getSelectedIDs">获取被选中的数据的ID</button>
     <button id="render">渲染数据</button>
+    <button id="unAllCheck">unAllCheck</button>
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="jquery-table/jquery-table.js"></script>
@@ -56,7 +57,7 @@
                 return i + 1;
             },
             showCheckbox: true,
-            showRadio: true,
+            showRadio: false,
             select: false,
             singleSelect: true,
             singleExpand: false,
@@ -371,7 +372,9 @@
             $("#table").table("setDatas", datas);
             $("#table").table("check", ["000005", "000006"]);
         })
-        
+        $("#unAllCheck").on("click",function(){
+            $("#table").table("unAllCheck",["000001","000002","000003","000004","000005", "000006"]);
+        })
     </script>
 </body>
 
