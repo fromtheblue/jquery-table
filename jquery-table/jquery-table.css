@@ -146,6 +146,10 @@
     opacity: 0;
     display: inline-block;
 }
+.table-draggable {
+    cursor: col-resize;
+    user-select: none;
+}
 
 /*!table中的复选框*/
 
