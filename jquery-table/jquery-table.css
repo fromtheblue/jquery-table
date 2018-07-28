@@ -18,9 +18,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-.table-thead {
+.thead-wrap{
     background-color: #088e8d;
+}
+.table-thead {
     color: white;
 }
 
@@ -49,8 +50,8 @@
 .table>tfoot>tr>th,
 .table>thead>tr>td,
 .table>thead>tr>th {
-    border: 0;
     vertical-align: middle;
+    border-width: 1px;
 }
 
 .table-no {

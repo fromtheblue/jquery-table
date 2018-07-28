@@ -787,7 +787,8 @@
             }
         });
         var tbodyTable = $("<table/>", {
-            "class": params.cls
+            "class": params.cls,
+            "border":1
         }).append(
             hideHead
         ).append(
@@ -799,12 +800,18 @@
             tbodyTable
         );
         var theadTable = $("<table/>", {
-            "class": params.cls
+            "class": params.cls,
+            "border":1
         }).append(
             thead.call($self)
         );
+        var theadWrap = $("<div/>",{
+            "class":"thead-wrap"
+        }).append(
+            theadTable
+        );
         this.addClass("table-wrap").html([
-            theadTable,
+            theadWrap,
             tbodyWrap
         ]);
         calcTBody.call(this);
@@ -832,6 +839,7 @@
                                 tbodyWrapMaxHeight = 0
                             }
                             tbodyWrap.get(0).style.maxHeight = tbodyWrapMaxHeight + "px";
+                            $(".thead-wrap",this).css({"padding-right":tbodyWrap.get(0).offsetWidth - tbodyWrap.get(0).clientWidth});
                         }
                     }
                     draggableTable(theadTable.get(0),function(){
