@@ -463,14 +463,14 @@
     }
     /*防止xss攻击，进行字符转换*/
     function safeStr(str) {
+        if (str===null||str===undefined) return '';
         if (typeof str !== 'string') return str;
-        if (!str) return '';
         return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
     /*反向转译字符*/
     function unSafeStr(str) {
+        if (str===null||str===undefined) return '';
         if (typeof str !== 'string') return str;
-        if (!str) return '';
         return str.replace(/&lt;/g, '\<').replace(/&gt;/g, '\>').replace(/&quot;/g, '\"').replace(/&#039;/g, "\'");
     }
     /* title每50个字符换行显示 */
@@ -728,7 +728,7 @@
                                         if (formatter) {
                                             return formatter.call($self, data[_column.field], data, idx, _column.field, row);
                                         }
-                                        return safeStr(data[_column.field]) || "";
+                                        return safeStr(data[_column.field]);
                                     },
                                     "class": _column.cellCls || "",
                                     title: function () {
