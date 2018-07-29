@@ -205,7 +205,12 @@
             throw new Error('The params must be Array or Number or String');
         }
         _datas.forEach(function (_data) {
-            _data.checked = false;
+            var data = _data.data;
+            ids.forEach(function(current_id){
+                if(data[id]==current_id){
+                    _data.checked = false;
+                }
+            })
         });
     }
 
