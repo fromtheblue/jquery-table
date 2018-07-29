@@ -849,7 +849,7 @@
                             $(tbodyTable).prepend("<colgroup></colgroup>");
                             tbodyColgroup = $(tbodyTable).find("colgroup").get(0);
                         }
-                        tbodyColgroup.innerHTML = theadColgroup.innerHTML;
+                        $(tbodyColgroup).html(theadColgroup.innerHTML);
                         tbodyTable.get(0).style.marginTop = -hideHead.get(0).getClientRects()[0].height + "px";
                     });
                 }
@@ -922,7 +922,11 @@ function draggableTable(table,cb) {
         for (var i = 0; i < cellWidths.length; i++) {
             var cellWidth = cellWidths[i];
             var col = document.createElement("col");
-            col.width = cellWidth * 100 / auxiliary.totalWidth + "%";
+            try {
+                col.width = cellWidth * 100 / auxiliary.totalWidth + "%";
+            } catch (error) {
+                console.log(error);
+            }
             cols.push(col);
             colgroup.appendChild(col);
         }
@@ -957,14 +961,9 @@ function draggableTable(table,cb) {
         var hotArea = 10;
         var isMouseDown = false;
         var draggableCls = "table-draggable";
-        var _this;
         var startX;
         var direction;
-        var rows = table.tHead.rows;
-        var cells;
-        var tableWidth = table.getClientRects()[0].width;
         var currentCell;
-        var currentWidth;
         var _colWidths = [];
         var totalWidth;
         $(table).on("mousedown", "th,td", function (e) {
@@ -1005,7 +1004,8 @@ function draggableTable(table,cb) {
                 setPercentage(offsetX);
                 cb.call(table);
             }
-        })
+        });
+        cb.call(table);
         /**
         * @return 拖拽的位置
         *  "left" 在单元格左边
