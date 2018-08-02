@@ -803,7 +803,9 @@
             "class": "tbody-wrap"
         }).append(
             tbodyTable
-        );
+        ).on("scroll",function(){
+            params._scrollTop = this.scrollTop;
+        })
         var theadTable = $("<table/>", {
             "class": params.cls,
             "border":1
@@ -845,6 +847,9 @@
                             }
                             tbodyWrap.get(0).style.maxHeight = tbodyWrapMaxHeight + "px";
                             $(".thead-wrap",this).css({"padding-right":tbodyWrap.get(0).offsetWidth - tbodyWrap.get(0).clientWidth});
+                            if(params._scrollTop){
+                                tbodyWrap.get(0).scrollTop = params._scrollTop;
+                            }
                         }
                     }
                     draggableTable(theadTable.get(0),function(){
