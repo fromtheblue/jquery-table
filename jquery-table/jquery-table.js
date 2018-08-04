@@ -850,7 +850,7 @@
                                 tbodyWrapMaxHeight = 0
                             }
                             tbodyWrap.get(0).style.maxHeight = tbodyWrapMaxHeight + "px";
-                            $(".thead-wrap",this).css({"padding-right":tbodyWrap.get(0).offsetWidth - tbodyWrap.get(0).clientWidth});
+                            $(".thead-wrap",this).css({"padding-right":tbodyWrap.width() - tbodyTable.width()});
                             if(params._scrollTop){
                                 tbodyWrap.get(0).scrollTop = params._scrollTop;
                             }
@@ -952,6 +952,9 @@ function draggableTable(table,cb) {
         return cols;
     }
     function getAuxiliary() {
+        if(table.querySelector("colgroup")){
+            return {totalWidth:this.width};
+        }
         var auxiliaryTBody = document.createElement("tbody");
         table.insertBefore(auxiliaryTBody, table.firstChild);
         var tr = document.createElement("tr");
