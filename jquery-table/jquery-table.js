@@ -795,6 +795,8 @@
             "class": params.cls,
             "border":1
         }).append(
+            params._tbodyColgroup
+        ).append(
             hideHead
         ).append(
             tbody.call($self)
@@ -810,6 +812,8 @@
             "class": params.cls,
             "border":1
         }).append(
+            params._theadColgroup
+        ).append(
             thead.call($self)
         );
         var theadWrap = $("<div/>",{
@@ -860,6 +864,8 @@
                             tbodyColgroup = $(tbodyTable).find("colgroup").get(0);
                         }
                         $(tbodyColgroup).html(theadColgroup.innerHTML);
+                        params._theadColgroup = theadColgroup;
+                        params._tbodyColgroup = tbodyColgroup;
                         tbodyTable.get(0).style.marginTop = -hideHead.get(0).getClientRects()[0].height + "px";
                     });
                 }
@@ -925,6 +931,9 @@ function draggableTable(table,cb) {
         }
     }
     function generateCols() {
+        if(table.querySelector("colgroup")){
+            return [].slice.call(table.querySelector("colgroup").querySelectorAll("col"));
+        }
         var cellWidths = auxiliary.cellWidths;
         var colgroup = document.createElement("colgroup");
         var cols = [];
