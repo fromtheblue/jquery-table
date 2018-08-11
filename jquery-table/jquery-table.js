@@ -206,8 +206,8 @@
         }
         _datas.forEach(function (_data) {
             var data = _data.data;
-            ids.forEach(function(current_id){
-                if(data[id]==current_id){
+            ids.forEach(function (current_id) {
+                if (data[id] == current_id) {
                     _data.checked = false;
                 }
             })
@@ -463,13 +463,13 @@
     }
     /*防止xss攻击，进行字符转换*/
     function safeStr(str) {
-        if (str===null||str===undefined) return '';
+        if (str === null || str === undefined) return '';
         if (typeof str !== 'string') return str;
         return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
     /*反向转译字符*/
     function unSafeStr(str) {
-        if (str===null||str===undefined) return '';
+        if (str === null || str === undefined) return '';
         if (typeof str !== 'string') return str;
         return str.replace(/&lt;/g, '\<').replace(/&gt;/g, '\>').replace(/&quot;/g, '\"').replace(/&#039;/g, "\'");
     }
@@ -793,7 +793,7 @@
         });
         var tbodyTable = $("<table/>", {
             "class": params.cls,
-            "border":1
+            "border": 1
         }).append(
             params._tbodyColgroup
         ).append(
@@ -805,19 +805,19 @@
             "class": "tbody-wrap"
         }).append(
             tbodyTable
-        ).on("scroll",function(){
+        ).on("scroll", function () {
             params._scrollTop = this.scrollTop;
         })
         var theadTable = $("<table/>", {
             "class": params.cls,
-            "border":1
+            "border": 1
         }).append(
             params._theadColgroup
         ).append(
             thead.call($self)
         );
-        var theadWrap = $("<div/>",{
-            "class":"thead-wrap"
+        var theadWrap = $("<div/>", {
+            "class": "thead-wrap"
         }).append(
             theadTable
         );
@@ -850,16 +850,18 @@
                                 tbodyWrapMaxHeight = 0
                             }
                             tbodyWrap.get(0).style.maxHeight = tbodyWrapMaxHeight + "px";
-                            $(".thead-wrap",this).css({"padding-right":tbodyWrap.width() - tbodyTable.width()});
-                            if(params._scrollTop){
+                            $(".thead-wrap", this).css({
+                                "padding-right": tbodyWrap.width() - tbodyTable.width()-2
+                            });
+                            if (params._scrollTop) {
                                 tbodyWrap.get(0).scrollTop = params._scrollTop;
                             }
                         }
                     }
-                    draggableTable(theadTable.get(0),function(){
+                    draggableTable(theadTable.get(0), function () {
                         var theadColgroup = theadTable.find("colgroup").get(0);
                         var tbodyColgroup = tbodyTable.find("colgroup").get(0);
-                        if(!tbodyColgroup){
+                        if (!tbodyColgroup) {
                             $(tbodyTable).prepend("<colgroup></colgroup>");
                             tbodyColgroup = $(tbodyTable).find("colgroup").get(0);
                         }
@@ -873,7 +875,8 @@
         }
     }
 })(jQuery);
-function draggableTable(table,cb) {
+
+function draggableTable(table, cb) {
     var colLen = function () {
         var firstRow = table.rows[0];
         var cells = firstRow.cells;
@@ -884,7 +887,7 @@ function draggableTable(table,cb) {
     var auxiliary = getAuxiliary();
     var totalWidth = auxiliary.totalWidth;
     //最小宽度
-    var minPercentage = 20/totalWidth*100;
+    var minPercentage = 20 / totalWidth * 100;
     var _cols = generateCols();
     var namespace = getNamespace(table);
     relationCol();
@@ -896,8 +899,11 @@ function draggableTable(table,cb) {
         _relationCol(tHead);
         [].forEach.call(tBodies, _relationCol);
         _relationCol(tFoot);
+
         function _relationCol(group) {
-            if (!group) { return };
+            if (!group) {
+                return
+            };
             var rows = group.rows;
             var positions = [];
             for (var i = 0; i < rows.length; i++) {
@@ -930,8 +936,9 @@ function draggableTable(table,cb) {
             }
         }
     }
+
     function generateCols() {
-        if(table.querySelector("colgroup")){
+        if (table.querySelector("colgroup")) {
             return [].slice.call(table.querySelector("colgroup").querySelectorAll("col"));
         }
         var cellWidths = auxiliary.cellWidths;
@@ -951,9 +958,12 @@ function draggableTable(table,cb) {
         }
         return cols;
     }
+
     function getAuxiliary() {
-        if(table.querySelector("colgroup")){
-            return {totalWidth:this.width};
+        if (table.querySelector("colgroup")) {
+            return {
+                totalWidth: this.width
+            };
         }
         var auxiliaryTBody = document.createElement("tbody");
         table.insertBefore(auxiliaryTBody, table.firstChild);
@@ -979,6 +989,7 @@ function draggableTable(table,cb) {
         }
     }
     _draggableTable();
+
     function _draggableTable() {
         var hotArea = 10;
         var isMouseDown = false;
@@ -989,22 +1000,22 @@ function draggableTable(table,cb) {
         var _colWidths = [];
         var totalWidth;
         $(table).on("mousedown", "th,td", function (e) {
-            _this = this;
-            direction = getPosition(this, e);
-            if (direction === "left" || direction === "right") {
-                isMouseDown = true;
-                $(this).addClass(draggableCls);
-                startX = e.clientX;
-                currentCell = this;
-                currentWidth = this.getClientRects()[0].width;
-                _colWidths.length = 0;
-                _cols.forEach(function (_col) {
-                    var width = parseFloat(_col.width);
-                    _colWidths.push(width);
-                });
-                totalWidth = table.rows[0].getClientRects()[0].width;
-            }
-        })
+                _this = this;
+                direction = getPosition(this, e);
+                if (direction === "left" || direction === "right") {
+                    isMouseDown = true;
+                    $(this).addClass(draggableCls);
+                    startX = e.clientX;
+                    currentCell = this;
+                    currentWidth = this.getClientRects()[0].width;
+                    _colWidths.length = 0;
+                    _cols.forEach(function (_col) {
+                        var width = parseFloat(_col.width);
+                        _colWidths.push(width);
+                    });
+                    totalWidth = table.rows[0].getClientRects()[0].width;
+                }
+            })
             .on("mousemove", "th,td", function (e) {
                 var _direction = getPosition(this, e);
                 if (_direction !== "center") {
@@ -1029,11 +1040,11 @@ function draggableTable(table,cb) {
         });
         cb.call(table);
         /**
-        * @return 拖拽的位置
-        *  "left" 在单元格左边
-        *  "right" 在单元格右边
-        *  "center" 在单元格中间
-        */
+         * @return 拖拽的位置
+         *  "left" 在单元格左边
+         *  "right" 在单元格右边
+         *  "center" 在单元格中间
+         */
         function getPosition(dom, e) {
             var cols = dom.cols;
             var firstCol = cols[0];
@@ -1045,18 +1056,19 @@ function draggableTable(table,cb) {
             }
             return "center";
         }
+
         function setPercentage(offsetX) {
             var cols = currentCell.cols;
             var adjacentCols = [];
             if (direction === "left") {
-                var percentage = - offsetX * 100 / totalWidth;
-                for(var i = 0;i<cols[0];i++){
+                var percentage = -offsetX * 100 / totalWidth;
+                for (var i = 0; i < cols[0]; i++) {
                     adjacentCols.push(i);
                 }
             } else if (direction === "right") {
                 var percentage = offsetX * 100 / totalWidth;
-                var adjacentCols = cols.slice(cols[cols.length - 1]+1);
-                for(var i = cols[cols.length-1]+1;i<colLen;i++){
+                var adjacentCols = cols.slice(cols[cols.length - 1] + 1);
+                for (var i = cols[cols.length - 1] + 1; i < colLen; i++) {
                     adjacentCols.push(i);
                 }
             }
@@ -1065,8 +1077,8 @@ function draggableTable(table,cb) {
                 var col = cols[i];
                 var _col = _cols[col];
                 _col.width = proportion[i] * percentage + _colWidths[col] + "%";
-                if(parseFloat(_col.width)<minPercentage){
-                    _col.width = minPercentage+"%";
+                if (parseFloat(_col.width) < minPercentage) {
+                    _col.width = minPercentage + "%";
                 }
             }
             var adjacentProportion = getProportion(adjacentCols);
@@ -1074,11 +1086,12 @@ function draggableTable(table,cb) {
                 var col = adjacentCols[i];
                 var _col = _cols[col];
                 _col.width = -adjacentProportion[i] * percentage + _colWidths[col] + "%";
-                if(parseFloat(_col.width)<minPercentage){
-                    _col.width = minPercentage+"%";
+                if (parseFloat(_col.width) < minPercentage) {
+                    _col.width = minPercentage + "%";
                 }
             }
         }
+
         function getProportion(cols) {
             var total = 0;
             var result = [];
@@ -1094,27 +1107,29 @@ function draggableTable(table,cb) {
             return result;
         }
     }
-    function getNamespace(dom){
+
+    function getNamespace(dom) {
         var namespace = [];
         _getNamespace(dom);
         namespace.reverse();
-        return "._"+namespace.join(" ");
-        function _getNamespace(dom){
+        return "._" + namespace.join(" ");
+
+        function _getNamespace(dom) {
             var tagName = dom.tagName;
             var id = dom.id;
-            if(id){
-                id="#"+id;
+            if (id) {
+                id = "#" + id;
             }
-            var className = (dom.getAttribute("class")||"").replace(/\s+/g,".");
-            if(className){
-                className="."+className;
+            var className = (dom.getAttribute("class") || "").replace(/\s+/g, ".");
+            if (className) {
+                className = "." + className;
             }
-            var index = ":nth-child("+($(dom).index()+1)+")";
-            namespace.push(tagName+id+className+index);
-            if(dom.parentElement){
+            var index = ":nth-child(" + ($(dom).index() + 1) + ")";
+            namespace.push(tagName + id + className + index);
+            if (dom.parentElement) {
                 _getNamespace(dom.parentElement);
             }
         }
-        
+
     }
 }

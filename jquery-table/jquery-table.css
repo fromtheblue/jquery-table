@@ -19,23 +19,26 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.thead-wrap{
+
+.thead-wrap {
     background-color: #088e8d;
 }
+
 .table-thead {
     color: white;
 }
 
-.table-wrap {
+/* .table-wrap {
     overflow-y: auto;
     overflow-x: hidden;
-}
+} */
 
 .tbody-wrap {
     overflow-x: hidden;
     overflow-y: auto;
 }
-.tbody-wrap thead{
+
+.tbody-wrap thead {
     visibility: hidden;
 }
 
@@ -54,7 +57,7 @@
     vertical-align: middle;
     border-width: 1px;
     border-style: solid;
-    border-color:#ddd;
+    border-color: #ddd;
 }
 
 .table-no {
@@ -150,6 +153,7 @@
     opacity: 0;
     display: inline-block;
 }
+
 .table-draggable {
     cursor: col-resize;
     user-select: none;
