@@ -1,5 +1,6 @@
 .table-wrap {
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
+    border-bottom: 0px;
     margin-bottom: 20px;
     max-height: 600px;
     width: calc(100% - 6px);
@@ -42,8 +43,11 @@
     visibility: hidden;
 }
 
-.table th/* ,
-.table td */ {
+.table th
+/* ,
+.table td */
+
+    {
     word-wrap: break-word;
     text-align: inherit;
 }
