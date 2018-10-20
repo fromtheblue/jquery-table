@@ -12,6 +12,7 @@
  *              select:false, 行是否可以被选中
  *              singleSelect:true, 行的选中方式是否只支持单选
  *              showRadio:true, 是否显示单选框(当显示复选框时将不展示)
+ *              radioShouldCancel:true,单选框再次点击的时候是否可以取消
  *              noRowMsg:function(datas){ 当未获取到数据或者数据不为数组的时候调用的函数
  *                  return datas?"未获取到数据":"数据加载异常";
  *              },
@@ -134,6 +135,7 @@
         select: false,
         singleSelect: false,
         showRadio: true,
+        radioShouldCancel:true,
         noRowMsg: function (datas) {
             return datas ? "未获取到数据" : "数据加载异常";
         },
@@ -615,6 +617,7 @@
         var datas = params.datas;
         var _columns = _getColumns(params.columns);
         var columnLength = _getColumnLength(params.columns) + (params.showNo ? 1 : 0) + (params.showCheckbox ? 1 : 0);
+        var radioShouldCancel = params.radioShouldCancel;
         return [$("<tbody/>").append(
                 function () {
                     if ((!params._datas || !params._datas.length) && params._showNoRowMsg) {
@@ -674,15 +677,29 @@
                                                 radio.checked = !!_data.checked;
                                                 /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
                                                 radio.disabled = _data.disableToggleChecked;
-                                                radio.addEventListener("change", function () {
-                                                    params._datas.forEach(function (item) {
-                                                        item.checked = false;
-                                                    })
-                                                    _data.checked = this.checked;
-                                                    /* 触发被选中事件或被取消选中事件 */
-                                                    this.checked ? onChecked(_data.data) : onUnchecked(_data.data);
-                                                    _render.call($self);
-                                                });
+                                                if(radioShouldCancel){
+                                                    radio.addEventListener("click", function () {
+                                                        params._datas.forEach(function (item) {
+                                                            if(item.data.id!==_data.data.id){
+                                                                item.checked = false;
+                                                            }
+                                                        })
+                                                        _data.checked = !_data.checked;
+                                                        /* 触发被选中事件或被取消选中事件 */
+                                                        _data.checked ? onChecked(_data.data) : onUnchecked(_data.data);
+                                                        _render.call($self);
+                                                    });
+                                                }else{
+                                                    radio.addEventListener("change", function () {
+                                                        params._datas.forEach(function (item) {
+                                                            item.checked = false;
+                                                        })
+                                                        _data.checked = this.checked;
+                                                        /* 触发被选中事件或被取消选中事件 */
+                                                        this.checked ? onChecked(_data.data) : onUnchecked(_data.data);
+                                                        _render.call($self);
+                                                    });
+                                                }
                                                 return radio;
                                             }()
                                         )

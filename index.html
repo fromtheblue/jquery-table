@@ -33,6 +33,11 @@
         .demo-input{
             width: 100%;
         }
+        .table-no,.table-head-radio,.table-checkbox{
+            white-space: nowrap;
+            text-overflow:ellipsis;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -61,6 +66,7 @@
             select: false,
             singleSelect: true,
             singleExpand: false,
+            radioShouldCancel:true,
             rowEvents: {
                 click: function (rowData, idx, e) {
                     console.log(this);
