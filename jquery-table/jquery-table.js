@@ -135,7 +135,7 @@
         select: false,
         singleSelect: false,
         showRadio: true,
-        radioShouldCancel:true,
+        radioShouldCancel: true,
         noRowMsg: function (datas) {
             return datas ? "未获取到数据" : "数据加载异常";
         },
@@ -672,15 +672,16 @@
                                             }
                                         }).append(
                                             function () {
-                                                var radio = document.createElement("input");
+                                                var radio = document.createElement("input"),
+                                                    id = $self.data("table").id;
                                                 radio.type = "radio";
                                                 radio.checked = !!_data.checked;
                                                 /* 不可修改选中状态的数据的复选框(单选框)变为不可用状态 */
                                                 radio.disabled = _data.disableToggleChecked;
-                                                if(radioShouldCancel){
+                                                if (radioShouldCancel) {
                                                     radio.addEventListener("click", function () {
                                                         params._datas.forEach(function (item) {
-                                                            if(item.data.id!==_data.data.id){
+                                                            if (item.data[id] !== _data.data[id]) {
                                                                 item.checked = false;
                                                             }
                                                         })
@@ -689,7 +690,7 @@
                                                         _data.checked ? onChecked(_data.data) : onUnchecked(_data.data);
                                                         _render.call($self);
                                                     });
-                                                }else{
+                                                } else {
                                                     radio.addEventListener("change", function () {
                                                         params._datas.forEach(function (item) {
                                                             item.checked = false;
@@ -868,7 +869,7 @@
                             }
                             tbodyWrap.get(0).style.maxHeight = tbodyWrapMaxHeight + "px";
                             $(".thead-wrap", this).css({
-                                "padding-right": tbodyWrap.width() - tbodyTable.width()-2
+                                "padding-right": tbodyWrap.width() - tbodyTable.width() - 2
                             });
                             if (params._scrollTop) {
                                 tbodyWrap.get(0).scrollTop = params._scrollTop;

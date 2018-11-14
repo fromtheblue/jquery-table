@@ -2,7 +2,7 @@
  * Created by wangqiong on 2017/2/28.
  */
 var datas=[{
-    id:"000001",
+    dataId:"000001",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -14,7 +14,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"000002",
+    dataId:"000002",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -26,7 +26,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"000003",
+    dataId:"000003",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -38,7 +38,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"000004",
+    dataId:"000004",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -50,7 +50,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"000005",
+    dataId:"000005",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
@@ -62,7 +62,7 @@ var datas=[{
     result:"3",
     message:false
 },{
-    id:"0000011",
+    dataId:"0000011",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -74,7 +74,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000021",
+    dataId:"0000021",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -86,7 +86,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"0000031",
+    dataId:"0000031",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -98,7 +98,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000041",
+    dataId:"0000041",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -110,7 +110,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"0000051",
+    dataId:"0000051",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
@@ -122,7 +122,7 @@ var datas=[{
     result:"3",
     message:false
 },{
-    id:"0000012",
+    dataId:"0000012",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -134,7 +134,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000022",
+    dataId:"0000022",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -146,7 +146,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"0000032",
+    dataId:"0000032",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -158,7 +158,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000042",
+    dataId:"0000042",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -170,7 +170,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"0000052",
+    dataId:"0000052",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
@@ -182,7 +182,7 @@ var datas=[{
     result:"3",
     message:false
 },{
-    id:"0000013",
+    dataId:"0000013",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -194,7 +194,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000023",
+    dataId:"0000023",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -206,7 +206,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"0000033",
+    dataId:"0000033",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -218,7 +218,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000043",
+    dataId:"0000043",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -230,7 +230,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"0000053",
+    dataId:"0000053",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
@@ -242,7 +242,7 @@ var datas=[{
     result:"3",
     message:false
 },{
-    id:"0000014",
+    dataId:"0000014",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -254,7 +254,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000024",
+    dataId:"0000024",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -266,7 +266,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"0000034",
+    dataId:"0000034",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -278,7 +278,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000044",
+    dataId:"0000044",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -290,7 +290,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"0000054",
+    dataId:"0000054",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
@@ -302,7 +302,7 @@ var datas=[{
     result:"3",
     message:false
 },{
-    id:"0000015",
+    dataId:"0000015",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -314,7 +314,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000025",
+    dataId:"0000025",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -326,7 +326,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"0000035",
+    dataId:"0000035",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -338,7 +338,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000045",
+    dataId:"0000045",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -350,7 +350,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"0000055",
+    dataId:"0000055",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
@@ -362,7 +362,7 @@ var datas=[{
     result:"3",
     message:false
 },{
-    id:"0000016",
+    dataId:"0000016",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -374,7 +374,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000026",
+    dataId:"0000026",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -386,7 +386,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"0000036",
+    dataId:"0000036",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -398,7 +398,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000046",
+    dataId:"0000046",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -410,7 +410,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"0000056",
+    dataId:"0000056",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
@@ -422,7 +422,7 @@ var datas=[{
     result:"3",
     message:false
 },{
-    id:"0000017",
+    dataId:"0000017",
     taskno:"201611001",
     batchno:"001",
     employer:"山东电力公司我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字我是一段文字",
@@ -434,7 +434,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000027",
+    dataId:"0000027",
     taskno:"201611002",
     batchno:"002",
     employer:"山东电力公司",
@@ -446,7 +446,7 @@ var datas=[{
     result:"",
     message:false
 },{
-    id:"0000037",
+    dataId:"0000037",
     taskno:"201611003",
     batchno:"003",
     employer:"山东电力公司",
@@ -458,7 +458,7 @@ var datas=[{
     result:"1",
     message:true
 },{
-    id:"0000047",
+    dataId:"0000047",
     taskno:"201611004",
     batchno:"004",
     employer:"山东电力公司",
@@ -470,7 +470,7 @@ var datas=[{
     result:"",
     message:true
 },{
-    id:"0000057",
+    dataId:"0000057",
     taskno:"201611005",
     batchno:"005",
     employer:"山东电力公司",
