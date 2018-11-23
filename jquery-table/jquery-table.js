@@ -751,9 +751,7 @@
                                     "class": _column.cellCls || "",
                                     title: function () {
                                         if (_column.cellTitle !== false) {
-                                            return unSafeStr(addStrLine(this.innerHTML));
-                                        } else {
-                                            return "";
+                                            return unSafeStr(addStrLine(this.innerText))||undefined;
                                         }
                                     }
                                 })
