@@ -740,7 +740,7 @@
                                 }
                             }(),
                             _columns.map(function (_column) {
-                                return $("<td/>", {
+                                var td = $("<td/>", {
                                     html: function () {
                                         var formatter = _column.formatter;
                                         if (formatter) {
@@ -748,13 +748,12 @@
                                         }
                                         return safeStr(data[_column.field]);
                                     },
-                                    "class": _column.cellCls || "",
-                                    title: function () {
-                                        if (_column.cellTitle !== false) {
-                                            return unSafeStr(addStrLine(this.innerText))||undefined;
-                                        }
-                                    }
+                                    "class": _column.cellCls || ""
                                 })
+                                if(_column.cellTitle !== false&&td.text()&&td.text().trim()){
+                                    td.attr("title",unSafeStr(addStrLine(td.text())))
+                                }
+                                return td;
                             })
                         );
                         row.on(Object.keys(params.rowEvents).reduce(function (target, key) {
