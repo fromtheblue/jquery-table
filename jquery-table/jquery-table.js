@@ -902,7 +902,7 @@ function draggableTable(table, cb) {
     var auxiliary = getAuxiliary();
     var totalWidth = auxiliary.totalWidth;
     //最小宽度
-    var minPercentage = 20 / totalWidth * 100;
+    var minPercentage = 80;
     var _cols = generateCols();
     var namespace = getNamespace(table);
     relationCol();
@@ -1055,7 +1055,7 @@ function draggableTable(table, cb) {
         });
         cb.call(table);
         /**
-         * @return 拖拽的位置
+         * @return 拖拽的位置，现在只支持右侧拖拽了
          *  "left" 在单元格左边
          *  "right" 在单元格右边
          *  "center" 在单元格中间
@@ -1064,9 +1064,9 @@ function draggableTable(table, cb) {
             var cols = dom.cols;
             var firstCol = cols[0];
             var lastCol = cols[cols.length - 1];
-            if (e.offsetX < hotArea && firstCol) {
+            /* if (e.offsetX < hotArea && firstCol) {
                 return "left";
-            } else if (dom.getClientRects()[0].width - e.offsetX < hotArea && lastCol < colLen - 1) {
+            } else  */if (dom.getClientRects()[0].width - e.offsetX < hotArea && lastCol < colLen - 1) {
                 return "right";
             }
             return "center";
@@ -1092,8 +1092,8 @@ function draggableTable(table, cb) {
                 var col = cols[i];
                 var _col = _cols[col];
                 _col.width = proportion[i] * percentage + _colWidths[col] + "%";
-                if (parseFloat(_col.width) < minPercentage) {
-                    _col.width = minPercentage + "%";
+                if (parseFloat(_col.width) < minPercentage / totalWidth * 100) {
+                    _col.width = minPercentage / totalWidth * 100 + "%";
                 }
             }
             var adjacentProportion = getProportion(adjacentCols);
@@ -1101,8 +1101,8 @@ function draggableTable(table, cb) {
                 var col = adjacentCols[i];
                 var _col = _cols[col];
                 _col.width = -adjacentProportion[i] * percentage + _colWidths[col] + "%";
-                if (parseFloat(_col.width) < minPercentage) {
-                    _col.width = minPercentage + "%";
+                if (parseFloat(_col.width) < minPercentage / totalWidth * 100) {
+                    _col.width = minPercentage / totalWidth * 100 + "%";
                 }
             }
         }
